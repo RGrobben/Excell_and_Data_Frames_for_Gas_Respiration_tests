@@ -267,7 +267,7 @@ class CarbonInAqueousPhase:
     def carbon_dioxide_in_aqueous_phase_mol(data_frame: pd.DataFrame, name_column: str,
                                             column_name_CO2_aq_in_mol_per_m3: str,
                                             water_volume_in_liters: float) -> None:
-        data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol_per_m3] * (water_volume_in_liters / 10000)
+        data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol_per_m3] * (water_volume_in_liters / 1000)
 
     @staticmethod
     def carbon_dioxide_produced_aqueous_phase(data_frame: pd.DataFrame, name_column: str,
@@ -292,11 +292,9 @@ class CarbonInAqueousPhase:
         data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
 
-
         constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
 
-        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - \
-                                  data_frame[name_column].at[0]
+        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - data_frame[name_column].at[0]
 
 
 
