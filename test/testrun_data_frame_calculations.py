@@ -7,7 +7,7 @@ from standard_gas_composition_calculations import MolesProduced, CumulativeProdu
     MolGasCompositionCalculations
 
 
-class GasCompositionTests(unittest.TestCase):
+class TestGasComposition(unittest.TestCase):
 
     def test_set_gas_composition(self):
         data_frame = pd.DataFrame(columns=["CH4 [%]", "CO2 [%]", "O2 [%]", "N2 [%]"])
@@ -34,58 +34,68 @@ class GasCompositionTests(unittest.TestCase):
             self.assertEqual(actual_values, expected_values)
 
 
-class MolGasCompositionCalculationsTests(unittest.TestCase):
+class TestMolGasCompositionCalculations(unittest.TestCase):
 
     def setUp(self):
         self.data_frame = pd.DataFrame({
-            "P sample before gc [hPa]": [1000, 2000, 3000],
-            "P sample after gc [hPa]": [500, 1500, 2500],
-            "CO2-corr [%]": [10.0, 15.0, 20.0],
-            "CH4-corr [%]": [5.0, 7.5, 10.0]
+            'Pressure': [1000, 2000, 3000],
+            'CO2': [0.5, 0.8, 1.2],
+            'CH4': [0.3, 0.4, 0.5]
         })
         self.Rgas = 8.314
-        self.exp_temperature = 298.15
-        self.volume_headspace = 10.0
-
-    def test_mol_gas_before_sampling(self):
-        MolGasCompositionCalculations.mol_gas_before_sampling(
-            self.data_frame, self.Rgas, self.exp_temperature, self.volume_headspace
-        )
-        expected_values = [403.4179, 806.8358, 1210.2537]
-        actual_values = self.data_frame["mg_bs"].tolist()
-        self.assertListAlmostEqual(actual_values, expected_values, places=4)
-
-    def test_mol_gas_after_sampling(self):
-        MolGasCompositionCalculations.mol_gas_after_sampling(
-            self.data_frame, self.Rgas, self.exp_temperature, self.volume_headspace
-        )
-        expected_values = [0.240545, 0.720653, 1.200871]
-        actual_values = self.data_frame["mg_as"].tolist()
-        self.assertListAlmostEqual(actual_values, expected_values)
-
-    def test_specific_gas_in_moles_before_sampling(self):
-        self.data_frame["mg_bs"] = [0.481089, 0.962178, 1.443268]
-        MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(
-            self.data_frame, "CO2-moles_bs", "mg_bs", "CO2-corr [%]"
-        )
-        expected_values = [0.048109, 0.096218, 0.144327]
-        actual_values = self.data_frame["CO2-moles_bs"].tolist()
-        self.assertListAlmostEqual(actual_values, expected_values)
-
-    def test_carbon_total_moles(self):
-        self.data_frame["CO2-moles_bs"] = [0.048109, 0.096218, 0.144327]
-        self.data_frame["CH4-moles_bs"] = [0.024054, 0.072065, 0.120087]
-        MolGasCompositionCalculations.carbon_total_moles(
-            self.data_frame, "carbon_total_moles_bs", "CO2-moles_bs", "CH4-moles_bs"
-        )
-        expected_values = [0.072163, 0.168283, 0.264414]
-        actual_values = self.data_frame["carbon_total_moles_bs"].tolist()
-        self.assertListAlmostEqual(actual_values, expected_values)
+        self.exp_temperature = 298
+        self.volume_headspace = 10
+        self.column_name_pressure = 'Pressure'
+        self.name_column = 'MolarGasVolume'
+        self.name_column_mg_before_or_after = 'MolarGasBeforeOrAfter'
+        self.name_column_specific_gas_corrected = 'SpecificGasCorrected'
+        self.name_column_CO2 = 'CO2'
+        self.name_column_CH4 = 'CH4'
 
     def assertListAlmostEqual(self, list1, list2, places=7):
+        """
+        Helper function to compare two lists of floats with given precision
+        """
         self.assertEqual(len(list1), len(list2))
-        for i in range(len(list1)):
-            self.assertAlmostEqual(list1[i], list2[i], places=places)
+        for a, b in zip(list1, list2):
+            self.assertAlmostEqual(a, b, places)
+
+    def test_mol_gas_sampling(self):
+        MolGasCompositionCalculations.mol_gas_sampling(
+            self.data_frame,
+            self.Rgas,
+            self.exp_temperature,
+            self.volume_headspace,
+            self.column_name_pressure,
+            self.name_column
+        )
+        expected_values = [403.620964, 807.241928, 1210.862892]
+        actual_values = self.data_frame[self.name_column].tolist()
+        self.assertListAlmostEqual(actual_values, expected_values, places=5)
+
+    def test_specific_gas_in_moles_before_sampling(self):
+        self.data_frame[self.name_column_mg_before_or_after] = [0.1, 0.2, 0.3]
+        self.data_frame[self.name_column_specific_gas_corrected] = [0.5, 0.7, 0.9]
+        MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(
+            self.data_frame,
+            self.name_column,
+            self.name_column_mg_before_or_after,
+            self.name_column_specific_gas_corrected
+        )
+        expected_result = pd.Series([0.0005, 0.0014, 0.0027])
+        self.assertSequenceEqual(list(self.data_frame[self.name_column]), list(expected_result))
+
+    def test_carbon_total_moles(self):
+        MolGasCompositionCalculations.carbon_total_moles(
+            self.data_frame,
+            self.name_column,
+            self.name_column_CO2,
+            self.name_column_CH4
+        )
+        expected_result = pd.Series([0.8, 1.2, 1.7])
+        self.assertSequenceEqual(list(self.data_frame[self.name_column]), list(expected_result))
+
+
 
 
 class TestMolesProduced(unittest.TestCase):
