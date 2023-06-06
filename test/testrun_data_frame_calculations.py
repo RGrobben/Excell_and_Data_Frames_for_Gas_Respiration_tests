@@ -36,6 +36,7 @@ class TestGasComposition(unittest.TestCase):
 
 class TestMolGasCompositionCalculations(unittest.TestCase):
 
+
     def setUp(self):
         self.data_frame = pd.DataFrame({
             'Pressure': [1000, 2000, 3000],
@@ -83,7 +84,8 @@ class TestMolGasCompositionCalculations(unittest.TestCase):
             self.name_column_specific_gas_corrected
         )
         expected_result = pd.Series([0.0005, 0.0014, 0.0027])
-        self.assertSequenceEqual(list(self.data_frame[self.name_column]), list(expected_result))
+        actual_values = self.data_frame[self.name_column].tolist()
+        self.assertListAlmostEqual(actual_values, expected_result, places=5)
 
     def test_carbon_total_moles(self):
         MolGasCompositionCalculations.carbon_total_moles(
@@ -93,9 +95,8 @@ class TestMolGasCompositionCalculations(unittest.TestCase):
             self.name_column_CH4
         )
         expected_result = pd.Series([0.8, 1.2, 1.7])
-        self.assertSequenceEqual(list(self.data_frame[self.name_column]), list(expected_result))
-
-
+        actual_values = self.data_frame[self.name_column].tolist()
+        self.assertListAlmostEqual(actual_values, expected_result, places=5)
 
 
 class TestMolesProduced(unittest.TestCase):
