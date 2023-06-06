@@ -1,6 +1,7 @@
 from data_frame_processor import DataFrameProcessor
 from standard_gas_composition_calculations import GasComposition, PercentageO2ConsumedAndCO2ProducedAndRatio, \
-    MolGasCompositionCalculations, MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase
+    MolGasCompositionCalculations, MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, \
+    ResultsInterpretations
 import pandas as pd
 
 
@@ -215,7 +216,6 @@ class RunDataFrameCalculationsForOneDataFrame:
                                     name_column_CO2_aq_mol_per_m3: str = "CO2_aq [mol/m3]",
                                     name_column_CO2_aq_mol: str = "CO2_aq [mol]",
                                     name_column_CO2_produced_aq: str = "CO2_produced_aq",
-                                    name_column_flush: str = "Flush (1=yes; 0=no)",
                                     name_column_DIC_cum: str = "DIC_cum",
                                     ):
         CarbonInAqueousPhase.partial_pressure_carbon_dioxide_before_sampling(
@@ -239,7 +239,6 @@ class RunDataFrameCalculationsForOneDataFrame:
             data_frame=self.data_frame,
             name_column=name_column_CO2_produced_aq,
             column_name_CO2_aq_in_mol=name_column_CO2_aq_mol,
-            column_name_flush=name_column_flush
         )
         CarbonInAqueousPhase.dissolved_inorganic_carbon_cumulative(
             data_frame=self.data_frame,
@@ -247,5 +246,32 @@ class RunDataFrameCalculationsForOneDataFrame:
             column_name_CO2_aq_in_mol_per_m3=name_column_CO2_aq_mol_per_m3,
             dry_mass_sample=dry_mass_sample,
             water_volume_in_liters=water_volume_in_liters,
-            column_name_flush=name_column_flush
+        )
+
+    def run_results_Interpretations(self,
+                                    name_column_Ctot_DM: str = "Ctot_DM [mg C/gDW]",
+                                    name_column_ratio_O2_CO2: str = "Ratio O2/CO2",
+                                    name_column_flush: str = "Flush (1=yes; 0=no)",
+                                    name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum ",
+                                    name_column_DIC_cum: str = "DIC_cum",
+                                    name_column_oxygen_consumed: str = "O2 consumed",
+                                    name_column_C_dioxide_produced: str = "CO2 produced",
+                                    name_column_CO2_produced_aq: str = "CO2_produced_aq",
+                                    ):
+        ResultsInterpretations.total_carbon_dry_matter(
+            data_frame=self.data_frame,
+            name_column=name_column_Ctot_DM,
+            name_column_flush=name_column_flush,
+            name_column_C_gas_dry_mass_cum=
+            name_column_C_gas_dry_mass_cumulative,
+            name_column_DIC_cum=name_column_DIC_cum,
+        )
+
+        ResultsInterpretations.ratio_oxygen_consumed_carbon_dioxide_produced(
+            data_frame=self.data_frame,
+            name_column=name_column_ratio_O2_CO2,
+            name_column_O2_consumed_mol=name_column_oxygen_consumed,
+            name_column_CO2_produced_mol=name_column_C_dioxide_produced,
+            name_column_CO2_produced_aqueous_mol=name_column_CO2_produced_aq,
+            name_column_flush=name_column_flush
         )

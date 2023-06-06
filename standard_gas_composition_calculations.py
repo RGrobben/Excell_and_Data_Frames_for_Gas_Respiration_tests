@@ -2,9 +2,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from openpyxl.workbook import Workbook
-
-from data_frame_processor import DataFrameProcessor
 
 
 class GasComposition:
@@ -253,7 +250,7 @@ class CarbonInAqueousPhase:
     @staticmethod
     def carbon_dioxide_in_aqueous_phase_mol_per_m3(data_frame: pd.DataFrame, name_column: str,
                                                    column_name_PP_CO2_bs: str,
-                                                   henry_law_constant: float = (5.23 * 10**-3)) -> None:
+                                                   henry_law_constant: float = (5.23 * 10 ** -3)) -> None:
         """
         :param data_frame: pd.DataFrame
         :param name_column: column name for the new created column for the calculation/
@@ -275,19 +272,16 @@ class CarbonInAqueousPhase:
     @staticmethod
     def carbon_dioxide_produced_aqueous_phase(data_frame: pd.DataFrame, name_column: str,
                                               column_name_CO2_aq_in_mol: str,
-                                              column_name_flush: str,
                                               first_row_value: float = 0) -> None:
         data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol] - data_frame[column_name_CO2_aq_in_mol].shift(1)
 
         data_frame[name_column].at[0] = first_row_value
-
 
     @staticmethod
     def dissolved_inorganic_carbon_cumulative(data_frame: pd.DataFrame, name_column: str,
                                               column_name_CO2_aq_in_mol_per_m3: str,
                                               dry_mass_sample: float,
                                               water_volume_in_liters: float,
-                                              column_name_flush: str,
                                               first_row_value: float = 0,
                                               molar_mass_carbon: float = 12
                                               ):
@@ -298,8 +292,36 @@ class CarbonInAqueousPhase:
         data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
 
+
         constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
 
-        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - data_frame[name_column].at[0]
+        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - \
+                                  data_frame[name_column].at[0]
 
 
+
+class ResultsInterpretations:
+
+    @staticmethod
+    def total_carbon_dry_matter(data_frame: pd.DataFrame, name_column: str, name_column_flush: str,
+                                name_column_C_gas_dry_mass_cum: str, name_column_DIC_cum: str,
+                                first_row_value: float = 0) -> None:
+        data_frame[name_column] = data_frame[name_column_C_gas_dry_mass_cum] + data_frame[name_column_DIC_cum]
+
+        data_frame[name_column].at[0] = first_row_value
+        mask = (data_frame[name_column_flush] == 1)
+        data_frame.loc[mask, name_column] = np.nan
+
+    @staticmethod
+    def ratio_oxygen_consumed_carbon_dioxide_produced(data_frame: pd.DataFrame, name_column: str,
+                                                      name_column_O2_consumed_mol: str,
+                                                      name_column_CO2_produced_mol: str,
+                                                      name_column_CO2_produced_aqueous_mol: str,
+                                                      name_column_flush: str, first_row_value: float = 0
+                                                      ):
+        data_frame[name_column] = data_frame[name_column_O2_consumed_mol] / (
+                data_frame[name_column_CO2_produced_mol] + data_frame[name_column_CO2_produced_aqueous_mol])
+
+        data_frame[name_column].at[0] = first_row_value
+        mask = (data_frame[name_column_flush] == 1)
+        data_frame.loc[mask, name_column] = np.nan
