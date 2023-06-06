@@ -43,6 +43,7 @@ class GasComposition:
         df["Sum-corr [%]"] = df["CH4-corr [%]"] + df["CO2-corr [%]"] + df["O2-corr [%]"] + df["N2-corr [%]"]
 
 
+# This class is not used.
 class PercentageO2ConsumedAndCO2ProducedAndRatio:
     """
     A class for performing calculations on the pandas DataFrame fot he gas chromatograph
@@ -83,6 +84,7 @@ class PercentageO2ConsumedAndCO2ProducedAndRatio:
                                                   np.NaN,
                                                   )
 
+    # Is not used in the code
     @staticmethod
     def calculate_ratio_o2_co2(data_frame: pd.DataFrame) -> None:
         """
@@ -99,24 +101,37 @@ class MolGasCompositionCalculations:
     This is based on the ideal gas law."""
 
     @staticmethod
-    def mol_gas_before_sampling(data_frame: pd.DataFrame,
-                                Rgas: float,
-                                exp_temperature: float,
-                                volume_headspace: float,
-                                column_name_pressure_before: str = "P sample before gc [hPa]",
-                                name_column: str = "mg_bs") -> None:
-        constant = 100 * volume_headspace / (Rgas * exp_temperature)
-        data_frame[name_column] = data_frame[column_name_pressure_before] * constant
+    def mol_gas_sampling(data_frame: pd.DataFrame,
+                         Rgas: float,
+                         exp_temperature: float,
+                         volume_headspace: float,
+                         column_name_pressure: str,
+                         name_column: str) -> None:
+        """
+        Calculate the molar gas volume in the given data frame.
 
-    @staticmethod
-    def mol_gas_after_sampling(data_frame: pd.DataFrame,
-                               Rgas: float,
-                               exp_temperature: float,
-                               volume_headspace: float,
-                               column_name_pressure_after: str = "P sample after gc [hPa]",
-                               name_column: str = "mg_as") -> None:
+        Parameters
+        ----------
+        data_frame : pd.DataFrame
+            The DataFrame containing the pressure data.
+        Rgas : float
+            Gas constant value.
+        exp_temperature : float
+            Experimental temperature value.
+        volume_headspace : float
+            Volume of the headspace.
+        column_name_pressure : str
+            Column name in the DataFrame for the pressure data.
+        name_column : str
+            Name of the column to be created/updated with the calculated molar gas values.
+
+        Returns
+        -------
+        None
+            The function updates the DataFrame in-place, it does not return a value.
+        """
         constant = 100 * volume_headspace / (Rgas * exp_temperature)
-        data_frame[name_column] = data_frame[column_name_pressure_after] * constant
+        data_frame[name_column] = data_frame[column_name_pressure] * constant
 
     @staticmethod
     def specific_gas_in_moles_before_sampling(data_frame: pd.DataFrame,
@@ -294,8 +309,8 @@ class CarbonInAqueousPhase:
 
         constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
 
-        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - data_frame[name_column].at[0]
-
+        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - \
+                                  data_frame[name_column].at[0]
 
 
 class ResultsInterpretations:

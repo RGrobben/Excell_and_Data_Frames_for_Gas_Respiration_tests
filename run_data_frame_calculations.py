@@ -36,22 +36,22 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                 column_name_pressure_after: str = "P sample after gc [hPa]",
                                                 ):
         # moles gas before sampling
-        MolGasCompositionCalculations.mol_gas_before_sampling(data_frame=self.data_frame,
-                                                              Rgas=Rgas,
-                                                              exp_temperature=exp_temperature,
-                                                              volume_headspace=volume_headspace,
-                                                              column_name_pressure_before=column_name_pressure_before,
-                                                              name_column=name_column_mg_bs
-                                                              )
+        MolGasCompositionCalculations.mol_gas_sampling(data_frame=self.data_frame,
+                                                       Rgas=Rgas,
+                                                       exp_temperature=exp_temperature,
+                                                       volume_headspace=volume_headspace,
+                                                       column_name_pressure=column_name_pressure_before,
+                                                       name_column=name_column_mg_bs
+                                                       )
 
         # moles gas after sampling
-        MolGasCompositionCalculations.mol_gas_after_sampling(data_frame=self.data_frame,
-                                                             Rgas=Rgas,
-                                                             exp_temperature=exp_temperature,
-                                                             volume_headspace=volume_headspace,
-                                                             column_name_pressure_after=column_name_pressure_after,
-                                                             name_column=name_column_mg_as
-                                                             )
+        MolGasCompositionCalculations.mol_gas_sampling(data_frame=self.data_frame,
+                                                       Rgas=Rgas,
+                                                       exp_temperature=exp_temperature,
+                                                       volume_headspace=volume_headspace,
+                                                       column_name_pressure=column_name_pressure_after,
+                                                       name_column=name_column_mg_as
+                                                       )
 
     def run_mol_gas_composition_calculation(self,
                                             name_column_mg_bs: str = "mg_bs",
@@ -104,7 +104,6 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                          name_column_CO2=name_column_mCO2_b,
                                                          name_column_CH4=name_column_mCH4_b)
 
-
         # CO2 after
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
                                                                             name_column=name_column_mCO2_a,
@@ -139,22 +138,22 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                          name_column_CH4=name_column_mCH4_a)
 
     def run_moles_produced(self,
-                          name_column_mCTot_produced: str = "mCTot_produced",
-                          name_column_mCTot_b: str = "mCTot_b",
-                          name_column_mCTot_a: str = "mCTot_a",
-                          name_column_oxygen_consumed: str = "O2 consumed",
-                          name_column_O2_before: str = "mO2_b",
-                          name_column_O2_after: str = "mO2_a",
-                          name_column_carbon_dioxide_produced: str = "CO2 produced",
-                          name_column_CO2_before: str = "mCO2_b",
-                          name_column_CO2_after: str = "mCO2_a",
-                          name_column_flush: str = "Flush (1=yes; 0=no)"):
+                           name_column_mCTot_produced: str = "mCTot_produced",
+                           name_column_mCTot_b: str = "mCTot_b",
+                           name_column_mCTot_a: str = "mCTot_a",
+                           name_column_oxygen_consumed: str = "O2 consumed",
+                           name_column_O2_before: str = "mO2_b",
+                           name_column_O2_after: str = "mO2_a",
+                           name_column_carbon_dioxide_produced: str = "CO2 produced",
+                           name_column_CO2_before: str = "mCO2_b",
+                           name_column_CO2_after: str = "mCO2_a",
+                           name_column_flush: str = "Flush (1=yes; 0=no)"):
         MolesProduced.total_carbon_produced_moles(data_frame=self.data_frame,
                                                   name_column=name_column_mCTot_produced,
                                                   name_column_mCTot_b=name_column_mCTot_b,
                                                   name_column_mCTot_a=name_column_mCTot_a,
                                                   name_column_flush=name_column_flush
-                                                      )
+                                                  )
         MolesProduced.oxygen_consumed_moles(data_frame=self.data_frame,
                                             name_column=name_column_oxygen_consumed,
                                             name_column_mO2_b=name_column_O2_before,
@@ -205,7 +204,6 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                                     molar_mass_carbon=molar_mass_carbon,
                                                                     dry_mass_sample=dry_mass_sample,
                                                                     name_column_flush=name_column_flush)
-
 
     def run_carbon_in_aqueous_phase(self,
                                     water_volume_in_liters: float,
