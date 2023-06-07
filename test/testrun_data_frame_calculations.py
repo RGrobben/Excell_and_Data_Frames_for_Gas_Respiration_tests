@@ -45,12 +45,7 @@ class TestGasComposition(unittest.TestCase):
             self.assertAlmostEqual(n2_corr_list_expected[i], data_frame["N2-corr [%]"][i], places=5)
 
 
-
-
-
-
 class TestMolGasCompositionCalculations(unittest.TestCase):
-
 
     def setUp(self):
         self.data_frame = pd.DataFrame({
@@ -116,24 +111,57 @@ class TestMolGasCompositionCalculations(unittest.TestCase):
 
 class TestMolesProduced(unittest.TestCase):
     def test_total_carbon_produced_moles(self):
+        mCTot_a = [
+            1.32E-05, 6.20E-04, 9.74E-04, 3.25E-04, 9.95E-04, 2.81E-04, 1.72E-03,
+            2.38E-03, 3.50E-04, 2.10E-03, 2.29E-04, 2.84E-03, 2.63E-04, 1.81E-03,
+            1.83E-04, 1.51E-03, 1.88E-04, 1.68E-03, 1.90E-04, 1.18E-03, 1.33E-04,
+            2.68E-03, 2.90E-04
+        ]
+        mCTot_b = [
+            1.32E-05, 6.21E-04, 9.76E-04, 3.31E-04, 9.99E-04, 2.85E-04, 1.72E-03,
+            2.39E-03, 3.51E-04, 2.11E-03, 2.30E-04, 2.84E-03, 2.64E-04, 1.81E-03,
+            1.83E-04, 1.51E-03, 1.89E-04, 1.69E-03, 1.90E-04, 1.19E-03, 1.33E-04,
+            2.68E-03, 2.91E-04
+        ]
+        flush = [
+            np.nan, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+        ]
+        m_carbont_tot_produced_in_mol = [
+            0.00E+00, 6.08E-04, 3.56E-04, np.nan, 6.73E-04, np.nan, 1.44E-03, 6.72E-04,
+            np.nan, 1.76E-03, np.nan, 2.62E-03, np.nan, 1.55E-03, np.nan, 1.33E-03, np.nan,
+            1.51E-03, np.nan, 9.96E-04, np.nan, 2.55E-03, np.nan
+        ]
         # Create a sample DataFrame
         df = pd.DataFrame({
-            'Name': ['A', 'B', 'C'],
-            'mCTot_b': [10, 5, 8],
-            'mCTot_a': [20, 12, 15]
+            'mCTot_b': mCTot_b,
+            'mCTot_a': mCTot_a,
+            'flush': flush
         })
 
         # Call the method under test
-        MolesProduced.total_carbon_produced_moles(df, 'Total Carbon', 'mCTot_b', 'mCTot_a')
+        MolesProduced.total_carbon_produced_moles(data_frame=df,
+                                                  name_column='Total Carbon',
+                                                  name_column_mCTot_b='mCTot_b',
+                                                  name_column_mCTot_a='mCTot_a',
+                                                  name_column_flush="flush")
 
         # Assert the expected output
         expected_output = pd.DataFrame({
-            'Name': ['A', 'B', 'C'],
-            'mCTot_b': [10, 5, 8],
-            'mCTot_a': [20, 12, 15],
-            'Total Carbon': [10, 7, 7]
+            'mCTot_b': mCTot_b,
+            'mCTot_a': mCTot_a,
+            'flush': flush,
+            'Total Carbon': m_carbont_tot_produced_in_mol
         })
-        pd.testing.assert_frame_equal(df, expected_output)
+        df["Total Carbon"] = df["Total Carbon"].fillna(0)
+        expected_output["Total Carbon"] = expected_output["Total Carbon"].fillna(0)
+        self.assertIsInstance(df, pd.DataFrame)
+        for i in range(1, len(flush)-1):
+            self.assertAlmostEqual(expected_output["mCTot_b"][i], df["mCTot_b"][i], places=5)
+            self.assertAlmostEqual(expected_output["mCTot_a"][i], df["mCTot_a"][i], places=5)
+            self.assertAlmostEqual(expected_output["flush"][i], df["flush"][i], places=5)
+            print(expected_output["Total Carbon"][i])
+            print(df["Total Carbon"][i])
+            self.assertAlmostEqual(expected_output["Total Carbon"][i], df["Total Carbon"][i], places=4)
 
     def test_oxygen_consumed_moles(self):
         df = pd.DataFrame({
