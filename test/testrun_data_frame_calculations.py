@@ -196,18 +196,38 @@ class TestMolesProduced(unittest.TestCase):
 
 class TestCumulativeOperation(unittest.TestCase):
     def setUp(self):
-        self.data = pd.DataFrame({
-            'name_column_produced_or_consumed': [1, 2, 3, 4, 5],
+
+        self.molar_mass_carbon = 12.01
+        self.dry_mass_sample = 2.5
+
+    def test_cumulative_operation(data):
+        data_frame = pd.DataFrame({
+            'name_column_produced_or_consumed': [0, 2, np.nan, 4, np.nan],
             'name_column_flush': [0, 0, 1, 0, 1]
         })
-        self.expected_output = pd.DataFrame({
-            'name_column_produced_or_consumed': [1, 2, 3, 4, 5],
+        expected_output = pd.DataFrame({
+            'name_column_produced_or_consumed': [0, 2, np.nan, 4, np.nan],
             'name_column_flush': [0, 0, 1, 0, 1],
-            'name_column_cum': [1, 3, np.nan, 7, np.nan]
+            'name_column_cum': [0, 2, np.nan, 6, np.nan]
         })
-
-    def test_cumulative_operation(self):
-        CumulativeProductionGasPhase.cumulative_operation(self.data, 'name_column_cum',
+        CumulativeProductionGasPhase.cumulative_operation(data_frame, 'name_column_cum',
                                                           'name_column_produced_or_consumed', 'name_column_flush', 0)
+        pd.testing.assert_frame_equal(data_frame, expected_output)
 
-        pd.testing.assert_frame_equal(self.data, self.expected_output)
+    def test_carbon_gas_dry_mass_cumulative(self):
+        # Create a sample DataFrame for testing
+        data = {
+            'name_column_flush': [0, 1, 0, 0, 1, 0],
+            'name_column_mCTot_produced_cumulative': [10, 20, 30, 40, 50, 60]
+        }
+        df = pd.DataFrame(data)
+
+        # Set up the expected result
+        expected_result = [0, 999, 180150, 240200, 999, 360300]
+
+        # Call the method under test
+        CumulativeProductionGasPhase.carbon_gas_dry_mass_cumulative(df, 'name_column', 'name_column_mCTot_produced_cumulative',
+                                                                    12.01, 2.0, 'name_column_flush', 0)
+        df["name_column"] = df["name_column"].fillna(999)
+        # Check if the result matches the expected result
+        self.assertListEqual(df['name_column'].tolist(), expected_result)

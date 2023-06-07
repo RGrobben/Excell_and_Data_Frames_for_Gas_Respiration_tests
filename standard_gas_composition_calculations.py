@@ -214,7 +214,15 @@ class CumulativeProductionGasPhase:
                              name_column_produced_or_consumed: str,
                              name_column_flush: str,
                              first_row_value: float = 0) -> None:
+        """
+        This cumulative operation is especially for the gas measurements with flushing.
 
+        :param data_frame: the input data frame for the operations.
+        :param name_column_cum: the name of the new created column for the cumulative values.
+        :param name_column_produced_or_consumed: the name of the values to be cumulated.
+        :param name_column_flush: the name of the flush column (zeros and ones)
+        :param first_row_value: the value for the first row.
+        """
         # Initialize column with NaN
         data_frame[name_column_cum] = np.nan
 
@@ -223,9 +231,7 @@ class CumulativeProductionGasPhase:
 
         # cumulative calculation with the flush conditions. With the last_non_flush_index the index of the last flush
         # is stored and that corresponding value can be called.
-
         last_non_flush_index = 0
-
         for index_row in range(1, len(data_frame)):
             if data_frame.loc[index_row, name_column_flush] == 0:
                 data_frame.loc[index_row, name_column_cum] = data_frame.loc[last_non_flush_index, name_column_cum] + \
