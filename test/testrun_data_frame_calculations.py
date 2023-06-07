@@ -33,10 +33,20 @@ class TestGasComposition(unittest.TestCase):
         self.assertEqual(expected_values_sum_corr, actual_values_sum_corr)
 
         # check for every gas
-        # for i in ["CH4", "CO2", "O2", "N2"]:
-        #     expected_values = [100.0] * 3
-        #     actual_values = data_frame[f"{i}-corr [%]"].tolist()
-        #     self.assertEqual(actual_values, expected_values)
+        ch4_corr_list_expected = [10.90909, 20, 30]
+        co2_corr_list_expected = [30.00000, 18.888889, 10]
+        o2_corr_list_expected = [31.818182, 43.333333, 10]
+        n2_corr_list_expected = [27.27273, 17.777778, 50]
+
+        for i in range(3):
+            self.assertAlmostEqual(ch4_corr_list_expected[i], data_frame["CH4-corr [%]"][i], places=5)
+            self.assertAlmostEqual(co2_corr_list_expected[i], data_frame["CO2-corr [%]"][i], places=5)
+            self.assertAlmostEqual(o2_corr_list_expected[i], data_frame["O2-corr [%]"][i], places=5)
+            self.assertAlmostEqual(n2_corr_list_expected[i], data_frame["N2-corr [%]"][i], places=5)
+
+
+
+
 
 
 class TestMolGasCompositionCalculations(unittest.TestCase):
