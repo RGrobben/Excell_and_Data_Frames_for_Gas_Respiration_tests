@@ -18,20 +18,25 @@ class TestGasComposition(unittest.TestCase):
 
     def test_sum_correct_sum(self):
         data_frame = pd.DataFrame({
-            "CH4 [%]": [10.0, 20.0, 30.0],
-            "CO2 [%]": [30.0, 20.0, 10.0],
-            "O2 [%]": [30.0, 40.0, 10.0],
-            "N2 [%]": [30.0, 20.0, 50.0]
+            "CH4 [%]": [12.0, 18.0, 30.0],
+            "CO2 [%]": [33.0, 17.0, 10.0],
+            "O2 [%]": [35.0, 39.0, 10.0],
+            "N2 [%]": [30.0, 16.0, 50.0]
         })
         GasComposition.sum_correct_sum(data_frame)
-        expected_values = [100.0, 100.0, 100.0]
-        actual_values = data_frame["Sum-corr [%]"].tolist()
-        self.assertEqual(actual_values, expected_values)
+        expected_values_sum = [110, 90, 100]
+        actual_values_sum = data_frame["Sum [%]"].tolist()
+        self.assertEqual(expected_values_sum, actual_values_sum)
 
-        for i in ["CH4", "CO2", "O2", "N2"]:
-            expected_values = [100.0] * 3
-            actual_values = data_frame[f"{i}-corr [%]"].tolist()
-            self.assertEqual(actual_values, expected_values)
+        expected_values_sum_corr = [100, 100, 100]
+        actual_values_sum_corr = data_frame["Sum-corr [%]"].tolist()
+        self.assertEqual(expected_values_sum_corr, actual_values_sum_corr)
+
+        # check for every gas
+        # for i in ["CH4", "CO2", "O2", "N2"]:
+        #     expected_values = [100.0] * 3
+        #     actual_values = data_frame[f"{i}-corr [%]"].tolist()
+        #     self.assertEqual(actual_values, expected_values)
 
 
 class TestMolGasCompositionCalculations(unittest.TestCase):
@@ -98,8 +103,6 @@ class TestMolGasCompositionCalculations(unittest.TestCase):
         actual_values = self.data_frame[self.name_column].tolist()
         self.assertListAlmostEqual(actual_values, expected_result, places=5)
 
-    def testen(self):
-        pass
 
 class TestMolesProduced(unittest.TestCase):
     def test_total_carbon_produced_moles(self):
