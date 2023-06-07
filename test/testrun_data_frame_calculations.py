@@ -159,26 +159,38 @@ class TestMolesProduced(unittest.TestCase):
             self.assertAlmostEqual(expected_output["mCTot_b"][i], df["mCTot_b"][i], places=5)
             self.assertAlmostEqual(expected_output["mCTot_a"][i], df["mCTot_a"][i], places=5)
             self.assertAlmostEqual(expected_output["flush"][i], df["flush"][i], places=5)
-            print(expected_output["Total Carbon"][i])
-            print(df["Total Carbon"][i])
             self.assertAlmostEqual(expected_output["Total Carbon"][i], df["Total Carbon"][i], places=4)
 
     def test_oxygen_consumed_moles(self):
         df = pd.DataFrame({
             'mO2_b': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'mO2_a': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            'mO2_a': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+            "flush": [0, 0, 1, 0, 1, 0, 0, 0, 1, 0]
         })
-        MolesProduced.oxygen_consumed_moles(df, 'result', 'mO2_b', 'mO2_a')
-        expected_result = [0, 8, 6, 4, 2, 0, -2, -4, -6, -8]
+        MolesProduced.oxygen_consumed_moles(data_frame=df,
+                                            name_column='result',
+                                            name_column_mO2_b='mO2_b',
+                                            name_column_mO2_a='mO2_a',
+                                            name_column_flush="flush")
+        expected_result = [0, 8, 0, 4, 0, 0, -2, -4, 0, -8]
+        # the zeros are representing the np.nan values.
+        df["result"] = df["result"].fillna(0)
         np.testing.assert_array_almost_equal(df['result'].values, expected_result)
 
     def test_carbon_dioxide_produced_moles(self):
         df = pd.DataFrame({
             'mCO2_b': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            'mCO2_a': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            'mCO2_a': [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+            "flush": [0, 0, 1, 0, 1, 0, 0, 0, 1, 0]
         })
-        MolesProduced.carbon_dioxide_produced_moles(df, 'result', 'mCO2_b', 'mCO2_a', 0)
-        expected_result = [0, -8, -6, -4, -2, 0, 2, 4, 6, 8]
+        MolesProduced.carbon_dioxide_produced_moles(data_frame=df,
+                                                    name_column='result',
+                                                    name_column_mCO2_b='mCO2_b',
+                                                    name_column_mCO2_a='mCO2_a',
+                                                    name_column_flush="flush")
+        expected_result = [0, -8, 0, -4, 0, 0, 2, 4, 0, 8]
+        # the zeros are representing the np.nan values.
+        df["result"] = df["result"].fillna(0)
         np.testing.assert_array_almost_equal(df['result'].values, expected_result)
 
 
