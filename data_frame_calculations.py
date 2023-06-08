@@ -314,7 +314,8 @@ class CarbonInAqueousPhase:
         # set the first value
         data_frame[name_column].at[0] = data_frame[column_name_CO2_aq_in_mol_per_m3].at[0] * constant
 
-        data_frame[name_column][1:] = (data_frame[column_name_CO2_aq_in_mol_per_m3][1:] * constant) - data_frame[name_column].at[0]
+        data_frame.loc[1:, name_column] = (data_frame.loc[1:, column_name_CO2_aq_in_mol_per_m3] * constant) - \
+                                          data_frame.loc[0, name_column]
 
 
 class ResultsInterpretations:
@@ -326,7 +327,7 @@ class ResultsInterpretations:
         data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
 
-        data_frame[name_column][1:] = data_frame[name_column_C_gas_dry_mass_cum][1:] + data_frame[name_column_DIC_cum][1:]
+        data_frame.loc[1:, name_column] = data_frame.loc[1:, name_column_C_gas_dry_mass_cum] + data_frame.loc[1:, name_column_DIC_cum]
 
         mask = (data_frame[name_column_flush] == 1)
         data_frame.loc[mask, name_column] = np.nan
