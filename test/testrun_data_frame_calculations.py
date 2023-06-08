@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from standard_gas_composition_calculations import MolesProduced, CumulativeProductionGasPhase, GasComposition, \
-    MolGasCompositionCalculations, CarbonInAqueousPhase
+    MolGasCompositionCalculations, CarbonInAqueousPhase, ResultsInterpretations
 
 
 class TestGasComposition(unittest.TestCase):
@@ -373,3 +373,43 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         for i in range(5):
             self.assertAlmostEqual(data[column_name_co2_aq_in_mol_per_m3][i], df[column_name_co2_aq_in_mol_per_m3][i], places=5)
             self.assertAlmostEqual(expected_values_dic_cum[i], df[name_column][i], places=3)
+
+
+class TestResultsInterpretations(unittest.TestCase):
+    def test_total_carbon_dry_matter(self):
+        name_column = "Tot Carbon dry matter"
+        name_column_flush = "flush"
+        name_column_c_gas_dry_mass_cum = "Cgas_DM_cum "
+        name_column_dic_cum = "DIC_cum"
+
+        data = {name_column_flush: [np.nan, 0, 0, 1, 0],
+                name_column_c_gas_dry_mass_cum: [0.00E+00, 4.75E-02, 7.53E-02, np.nan, 1.28E-01],
+                name_column_dic_cum: [1.342274225973880E-03,
+                                      5.717611794091300E-02,
+                                      8.846254496061420E-02,
+                                      3.225693051864370E-02,
+                                      9.896609157080900E-02]
+                }
+        df = pd.DataFrame(data)
+
+        ResultsInterpretations.total_carbon_dry_matter(
+            data_frame=df,
+            name_column=name_column,
+            name_column_flush=name_column_flush,
+            name_column_C_gas_dry_mass_cum=name_column_c_gas_dry_mass_cum,
+            name_column_DIC_cum=name_column_dic_cum
+        )
+
+        # 999_999 representst np.nan
+        expected_values_total_carbon_dry_matter = [0.0000000000000000E+00,
+                                                   1.0468968410856200E-01,
+                                                   1.6377501873632500E-01,
+                                                   999_999,
+                                                   2.2688578876849800E-01,
+                                                   ]
+        df[name_column] = df[name_column].fillna(999_999)
+        df[name_column_flush] = df[name_column_flush].fillna(999)
+
+        for i in range(5):
+            self.assertAlmostEqual(data[name_column_dic_cum][i], df[name_column_dic_cum][i], places=5)
+            self.assertAlmostEqual(expected_values_total_carbon_dry_matter[i], df[name_column][i], places=3)

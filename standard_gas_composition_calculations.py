@@ -323,9 +323,11 @@ class ResultsInterpretations:
     def total_carbon_dry_matter(data_frame: pd.DataFrame, name_column: str, name_column_flush: str,
                                 name_column_C_gas_dry_mass_cum: str, name_column_DIC_cum: str,
                                 first_row_value: float = 0) -> None:
-        data_frame[name_column] = data_frame[name_column_C_gas_dry_mass_cum] + data_frame[name_column_DIC_cum]
-
+        data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
+
+        data_frame[name_column][1:] = data_frame[name_column_C_gas_dry_mass_cum][1:] + data_frame[name_column_DIC_cum][1:]
+
         mask = (data_frame[name_column_flush] == 1)
         data_frame.loc[mask, name_column] = np.nan
 
