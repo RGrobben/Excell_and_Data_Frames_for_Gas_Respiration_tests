@@ -26,8 +26,14 @@ class DataFrameProcessor:
                        time_column_name: str, day_plus_time_column_name: str = "Day + Time",
                        day_column_name: str = "Day") -> None:
 
+        data_frame[date_column_name] = data_frame[date_column_name].astype(str)
+        data_frame[time_column_name] = data_frame[time_column_name].astype(str)
+
+        print(data_frame[date_column_name])
+        print(data_frame[time_column_name])
+
         data_frame[day_plus_time_column_name] = pd.to_datetime(data_frame[date_column_name] + ' ' +
-                                                               data_frame[time_column_name], format='%d/%m/%Y %H:%M')
+                                                               data_frame[time_column_name], dayfirst=True)
 
         data_frame[day_column_name] = (data_frame[day_plus_time_column_name] -
                                        data_frame[day_plus_time_column_name].iloc[0]) / pd.Timedelta(days=1)

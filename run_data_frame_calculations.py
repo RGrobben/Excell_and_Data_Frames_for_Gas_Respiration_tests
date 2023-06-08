@@ -13,9 +13,8 @@ class RunDataFrameCalculationsForOneDataFrame:
         self.data_frame = data_frame
 
     def run_data_frame_processor_calculations(self, fraction_to_time: bool = False):
-        DataFrameProcessor.fill_nan_values(data_frame=self.data_frame, column_name="Time", value="00:00:00")
-        DataFrameProcessor.add_day_column(data_frame=self.data_frame, date_column_name="Date", time_column_name="Time",
-                                          fraction_to_time=fraction_to_time)
+        # DataFrameProcessor.fill_nan_values(data_frame=self.data_frame, column_name="Time", value="00:00:00")
+        DataFrameProcessor.add_day_column(data_frame=self.data_frame, date_column_name="Date", time_column_name="Time")
 
     def run_gas_composition_calculations(self):
         GasComposition.set_gas_composition(data_frame=self.data_frame, ch4=0, co2=0.03, o2=21.90, n2=78.07, index=0)
