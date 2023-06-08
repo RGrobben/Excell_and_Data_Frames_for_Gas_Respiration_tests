@@ -313,3 +313,33 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         for i in range(5):
             self.assertAlmostEqual(data[column_name_co2_aq_mol_per_m3][i], df[column_name_co2_aq_mol_per_m3][i], places=5)
             self.assertAlmostEqual(expected_values_co2_aq_mol[i], df[name_column][i], places=5)
+
+    def test_carbon_dioxide_produced_aqueous_phase(self):
+        name_column = "CO2_aq_produced"
+        column_name_co2_aq_in_mol = "CO2_aq [mol]"
+
+        data = {column_name_co2_aq_in_mol: [1.71819809280000000E-05,
+                                            7.49073385074627000E-04,
+                                            1.14955994881517000E-03,
+                                            4.30091619094549000E-04,
+                                            1.28401215987642000E-03,
+                                            ] }
+        df = pd.DataFrame(data)
+
+        CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase(
+            data_frame=df,
+            name_column=name_column,
+            column_name_CO2_aq_in_mol=column_name_co2_aq_in_mol
+        )
+
+        expected_values_co2_produced = [0.00000000000000000E+00,
+                                        7.31891404146627000E-04,
+                                        4.00486563740539000E-04,
+                                        -7.1946832972061700E-04,
+                                        8.53920540781875000E-04,
+                                        ]
+        for i in range(5):
+            self.assertAlmostEqual(data[column_name_co2_aq_in_mol][i], df[column_name_co2_aq_in_mol][i], places=5)
+            self.assertAlmostEqual(expected_values_co2_produced[i], df[name_column][i], places=5)
+
+
