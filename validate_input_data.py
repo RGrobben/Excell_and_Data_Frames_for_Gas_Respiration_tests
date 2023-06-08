@@ -1,6 +1,10 @@
-from datetime import datetime
-
 import pandas as pd
+from colour import Color
+import openpyxl
+from openpyxl.styles import PatternFill
+
+from data_classes import FillType
+from nice_functions import NiceExcelFunction
 
 
 def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str) -> []:
@@ -12,9 +16,30 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
             invalid_rows.append(index)
 
     if len(invalid_rows) > 0:
-        return invalid_rows
+        return column_name, invalid_rows
     else:
         return True
+
+def style_color_cells_with_given_indexes(workbook, sheet_name, data_frame: pd.DataFrame, color: Color,
+                                         column_name: str, list_indexes_from_data_frame: [int],
+                                         start_row_values_table: int) -> None:
+    color_fill = PatternFill(start_color=color, end_color=color, fill_type=FillType)
+
+    sheet = workbook[sheet_name]
+    index_column_data_frame = data_frame.columns.get_loc(column_name)
+    column_letter = NiceExcelFunction.get_column_letter_from_index(index_column_data_frame)
+
+    for index in list_indexes_from_data_frame:
+        index_row_sheet = index + start_row_values_table
+        column_row_excel_combination = column_letter + str(index_row_sheet)
+        sheet[column_row_excel_combination].style = color_fill
+
+
+ class validate_if_all_cells_are_correctly_filled:
+     def __init__(self, data_frame: pd.DataFrame):
+         self.data_frame = data_frame
+
+    def find_indexes_and_fill
 
 
 class ValidateInputData:
@@ -45,8 +70,9 @@ class ValidateInputData:
     def validate_if_time_plus_date_is_chronologically(self):
         pass
 
-    def validate_if_there_are_P_atmosphere(self):
-        pass
+    def validate_if_there_are_P_atmosphere(self, name_column_p_atmosphere: str):
+        validate_if_there_is_a_float_or_integer_in_cell(data_frame=self.data_frame,
+                                                        column_name=name_column_p_atmosphere)
 
     def validate_if_there_are_P_before(self):
         pass
