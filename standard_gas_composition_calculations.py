@@ -334,12 +334,12 @@ class ResultsInterpretations:
     @staticmethod
     def ratio_oxygen_consumed_carbon_dioxide_produced(data_frame: pd.DataFrame, name_column: str,
                                                       name_column_O2_consumed_mol: str,
-                                                      name_column_CO2_produced_mol: str,
+                                                      name_column_CO2_produced_gas_mol: str,
                                                       name_column_CO2_produced_aqueous_mol: str,
                                                       name_column_flush: str, first_row_value: float = 0
                                                       ):
         data_frame[name_column] = data_frame[name_column_O2_consumed_mol] / (
-                data_frame[name_column_CO2_produced_mol] + data_frame[name_column_CO2_produced_aqueous_mol])
+                data_frame[name_column_CO2_produced_gas_mol] + data_frame[name_column_CO2_produced_aqueous_mol])
 
         data_frame[name_column].at[0] = first_row_value
         mask = (data_frame[name_column_flush] == 1)

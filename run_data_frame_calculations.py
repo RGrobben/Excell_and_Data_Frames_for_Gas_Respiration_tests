@@ -269,7 +269,7 @@ class RunDataFrameCalculationsForOneDataFrame:
             data_frame=self.data_frame,
             name_column=name_column_ratio_O2_CO2,
             name_column_O2_consumed_mol=name_column_oxygen_consumed,
-            name_column_CO2_produced_mol=name_column_C_dioxide_produced,
+            name_column_CO2_produced_gas_mol=name_column_C_dioxide_produced,
             name_column_CO2_produced_aqueous_mol=name_column_CO2_produced_aq,
             name_column_flush=name_column_flush
         )

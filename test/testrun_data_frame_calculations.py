@@ -400,7 +400,7 @@ class TestResultsInterpretations(unittest.TestCase):
             name_column_DIC_cum=name_column_dic_cum
         )
 
-        # 999_999 representst np.nan
+        # 999_999 represents np.nan
         expected_values_total_carbon_dry_matter = [0.0000000000000000E+00,
                                                    1.0468968410856200E-01,
                                                    1.6377501873632500E-01,
@@ -413,3 +413,43 @@ class TestResultsInterpretations(unittest.TestCase):
         for i in range(5):
             self.assertAlmostEqual(data[name_column_dic_cum][i], df[name_column_dic_cum][i], places=5)
             self.assertAlmostEqual(expected_values_total_carbon_dry_matter[i], df[name_column][i], places=3)
+
+    def test_ratio_oxygen_consumed_carbon_dioxide_produced(self):
+        name_column = "Ratio O2/CO2"
+        name_column_o2_consumed_mol = "O2 consumed mol"
+        name_column_co2_produced_gas_mol = "CO2 gas produced mol"
+        name_column_co2_produced_aqueous_mol = "CO2_aq produced mol",
+        name_column_flush = "flush"
+
+        data = {name_column_o2_consumed_mol: [0.00E+00,  0.008816302,  0.000247261,  np.nan,  0.005625266],
+                name_column_co2_produced_gas_mol: [0.00E+00, 0.00056301, 0.000309216, np.nan, 0.000662512],
+                name_column_co2_produced_aqueous_mol: [0.00000000000000000E+00,
+                                                       7.31891404146627000E-04,
+                                                       4.00486563740539000E-04,
+                                                       -7.19468329720617000E-04,
+                                                       8.53920540781875000E-04
+                                                       ],
+                name_column_flush: [np.nan, 0, 0, 1, 0]
+                }
+        df = pd.DataFrame(data)
+
+        ResultsInterpretations.ratio_oxygen_consumed_carbon_dioxide_produced(
+            data_frame=df,
+            name_column=name_column,
+            name_column_O2_consumed_mol=name_column_o2_consumed_mol,
+            name_column_CO2_produced_gas_mol=name_column_co2_produced_gas_mol,
+            name_column_CO2_produced_aqueous_mol=name_column_co2_produced_aqueous_mol,
+            name_column_flush=name_column_flush
+        )
+
+        expected_values_ratio = [0.0000000000000000E+00, 6.8084727628589200E+00, 3.4840115566368000E-01,
+                                 999_999, 3.7095378263987700E+00]
+        # 999_999 represents np.nan
+        df[name_column] = df[name_column].fillna(999_999)
+        df[name_column_flush] = df[name_column_flush].fillna(999)
+
+        for i in range(5):
+            self.assertAlmostEqual(expected_values_ratio[i], df[name_column][i], places=3)
+
+
+
