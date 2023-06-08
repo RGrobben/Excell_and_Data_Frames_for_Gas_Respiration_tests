@@ -311,7 +311,8 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
                                       1.28401215987642000E-03,
                                       ]
         for i in range(5):
-            self.assertAlmostEqual(data[column_name_co2_aq_mol_per_m3][i], df[column_name_co2_aq_mol_per_m3][i], places=5)
+            self.assertAlmostEqual(data[column_name_co2_aq_mol_per_m3][i], df[column_name_co2_aq_mol_per_m3][i],
+                                   places=5)
             self.assertAlmostEqual(expected_values_co2_aq_mol[i], df[name_column][i], places=5)
 
     def test_carbon_dioxide_produced_aqueous_phase(self):
@@ -323,7 +324,7 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
                                             1.14955994881517000E-03,
                                             4.30091619094549000E-04,
                                             1.28401215987642000E-03,
-                                            ] }
+                                            ]}
         df = pd.DataFrame(data)
 
         CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase(
@@ -342,4 +343,33 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
             self.assertAlmostEqual(data[column_name_co2_aq_in_mol][i], df[column_name_co2_aq_in_mol][i], places=5)
             self.assertAlmostEqual(expected_values_co2_produced[i], df[name_column][i], places=5)
 
+    def test_dissolved_inorganic_carbon_cumulative(self):
+        name_column = "DIC_cum"
+        column_name_co2_aq_in_mol_per_m3 = "CO2_aq [mol/m3]"
 
+        data = {column_name_co2_aq_in_mol_per_m3: [1.753263360000000 * 10**-1,
+                                                   7.643605970149250,
+                                                   1.173020355933840 * 10**1,
+                                                   4.388689990760700,
+                                                   1.310216489669820 * 10**1,
+                                                   ]}
+        df = pd.DataFrame(data)
+
+        CarbonInAqueousPhase.dissolved_inorganic_carbon_cumulative(
+            data_frame=df,
+            name_column=name_column,
+            column_name_CO2_aq_in_mol_per_m3=column_name_co2_aq_in_mol_per_m3,
+            dry_mass_sample=153.6,
+            water_volume_in_liters=0.098
+        )
+
+        expected_values_dic_cum = [1.342274225973880 * 10**-3,
+                                   5.717611794091300 * 10**-2,
+                                   8.846254496061420 * 10**-2,
+                                   3.225693051864370 * 10**-2,
+                                   9.896609157080900 * 10**-2,
+                                   ]
+
+        for i in range(5):
+            self.assertAlmostEqual(data[column_name_co2_aq_in_mol_per_m3][i], df[column_name_co2_aq_in_mol_per_m3][i], places=5)
+            self.assertAlmostEqual(expected_values_dic_cum[i], df[name_column][i], places=3)

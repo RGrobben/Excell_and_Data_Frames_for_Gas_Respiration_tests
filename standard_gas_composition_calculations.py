@@ -303,20 +303,18 @@ class CarbonInAqueousPhase:
                                               column_name_CO2_aq_in_mol_per_m3: str,
                                               dry_mass_sample: float,
                                               water_volume_in_liters: float,
-                                              first_row_value: float = 0,
                                               molar_mass_carbon: float = 12
                                               ):
         """
 
         :type molar_mass_carbon: molar mass of carbon. is constant and set to 12 g/mol
         """
-        data_frame[name_column] = np.nan
-        data_frame[name_column].at[0] = first_row_value
-
         constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
+        data_frame[name_column] = np.nan
+        # set the first value
+        data_frame[name_column].at[0] = data_frame[column_name_CO2_aq_in_mol_per_m3].at[0] * constant
 
-        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant) - \
-                                  data_frame[name_column].at[0]
+        data_frame[name_column][1:] = (data_frame[column_name_CO2_aq_in_mol_per_m3][1:] * constant) - data_frame[name_column].at[0]
 
 
 class ResultsInterpretations:
