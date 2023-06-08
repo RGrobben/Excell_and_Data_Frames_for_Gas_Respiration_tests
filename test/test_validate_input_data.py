@@ -40,8 +40,9 @@ class TestValidateInputData(unittest.TestCase):
             pass
 
     def test_validate_if_there_are_dates_wrong_dates(self):
-        self.df['DateColumn'][1] = np.nan  # Modify a date to be incorrect
-        validator = ValidateInputData(self.df)
-        result = validator.validate_if_there_are_dates('DateColumn')
+        data_frame = self.df
+        data_frame[self.date_column].at[1] = "2023-5-3"  # Modify a date to be incorrect
+        validator = ValidateInputData(data_frame)
+        result = validator.validate_if_there_are_dates(self.date_column)
         expected = "The following rows have wrong dates [1]"
         self.assertEqual(expected, result)

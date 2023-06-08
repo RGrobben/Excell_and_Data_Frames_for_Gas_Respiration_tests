@@ -8,14 +8,22 @@ class ValidateInputData:
         self.data_frame = data_frame
 
     def validate_if_there_are_dates(self, column_name_date: str):
-        if column_name_date not in self.data_frame.columns:
-            return f"Column '{column_name_date}' does not exist in the data frame."
-
-        mask = self.data_frame[column_name_date].apply(lambda x: isinstance(x, datetime))
-        if mask.all():
-            return True
-        else:
-            mask[~mask].index.tolist()
+        # if column_name_date not in self.data_frame.columns:
+        #     return f"Column '{column_name_date}' does not exist in the data frame."
+        #
+        # self.data_frame[column_name_date] = pd.to_datetime(self.data_frame[column_name_date].astype(str), dayfirst=False)
+        #
+        # mask = self.data_frame[column_name_date].apply(lambda x: isinstance(x, datetime))
+        # if mask.all(True):
+        #     return True
+        # else:
+        #     # valse_indexes = []
+        #     # for mask_value in mask:
+        #     #     if not True:
+        #     #         valse_indexes.append(mask.)
+        #     # return valse_indexes
+        #     return mask[~mask].index.tolist()
+        pass
 
     def validate_if_there_are_times(self):
         pass
