@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from standard_gas_composition_calculations import MolesProduced, CumulativeProductionGasPhase, GasComposition, \
+from data_frame_calculations import MolesProduced, CumulativeProductionGasPhase, GasComposition, \
     MolGasCompositionCalculations, CarbonInAqueousPhase, ResultsInterpretations
 
 

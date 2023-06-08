@@ -5,7 +5,7 @@ import hypothesis.strategies as st
 
 import pandas as pd
 
-from standard_gas_composition_calculations import MolPlainFormula
+from data_frame_calculations import MolPlainFormula
 
 
 class TestMolPlainFormula(unittest.TestCase):

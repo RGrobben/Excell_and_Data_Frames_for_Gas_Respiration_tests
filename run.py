@@ -3,7 +3,7 @@ from IPython.core.display_functions import display
 
 from data_frame_processor import DataFrameProcessor
 from excel_manager import ExcelManager, NiceExcelFunction
-from standard_gas_composition_calculations import GasComposition, PercentageO2ConsumedAndCO2ProducedAndRatio
+from data_frame_calculations import GasComposition, PercentageO2ConsumedAndCO2ProducedAndRatio
 
 # path_input_excel = r"C:\Users\robbe\Desktop\Q4 2022-2023\Bachelor Eind Werk\Geotechnical\Python-tool\Input Excel\Gas_production_test_KRA_Input_Robbert_04.xlsx"
 # manager = ExcelManager(path_input_excel)
