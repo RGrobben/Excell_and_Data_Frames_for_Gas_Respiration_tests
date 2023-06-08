@@ -22,8 +22,6 @@ class DataFrameProcessor:
         data_frame[column_name] = data_frame[column_name].fillna(value)
 
 
-
-
     @staticmethod
     def add_day_column(data_frame: pd.DataFrame, date_column_name: str, time_column_name: str,
                        day_column_name: Optional[str] = 'Day', fraction_to_time: bool = False) -> None:
