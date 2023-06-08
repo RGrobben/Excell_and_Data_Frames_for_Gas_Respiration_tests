@@ -280,8 +280,36 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
                                              1.173020355933840E+01,
                                              4.388689990760700E+00,
                                              1.310216489669820E+01,
-]
+                                             ]
 
         for i in range(5):
             self.assertAlmostEqual(data[column_name_pp_co2_bs][i], df[column_name_pp_co2_bs][i], places=5)
             self.assertAlmostEqual(expected_values_co2_aq_mol_per_m3[i], df[name_column][i], places=5)
+
+    def test_carbon_dioxide_in_aqueous_phase_mol(self):
+        name_column = "CO2_aq [mol]"
+        column_name_co2_aq_mol_per_m3 = "CO2_aq [mol/m3]"
+
+        data = {column_name_co2_aq_mol_per_m3: [1.753263360000000E-01,
+                                                7.643605970149250E+00,
+                                                1.173020355933840E+01,
+                                                4.388689990760700E+00,
+                                                1.310216489669820E+01,
+                                                ]}
+        df = pd.DataFrame(data)
+        CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol(
+            data_frame=df,
+            name_column=name_column,
+            column_name_CO2_aq_in_mol_per_m3=column_name_co2_aq_mol_per_m3,
+            water_volume_in_liters=0.098,
+        )
+
+        expected_values_co2_aq_mol = [1.71819809280000000E-05,
+                                      7.49073385074627000E-04,
+                                      1.14955994881517000E-03,
+                                      4.30091619094549000E-04,
+                                      1.28401215987642000E-03,
+                                      ]
+        for i in range(5):
+            self.assertAlmostEqual(data[column_name_co2_aq_mol_per_m3][i], df[column_name_co2_aq_mol_per_m3][i], places=5)
+            self.assertAlmostEqual(expected_values_co2_aq_mol[i], df[name_column][i], places=5)
