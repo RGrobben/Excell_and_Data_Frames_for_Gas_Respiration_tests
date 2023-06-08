@@ -21,64 +21,16 @@ class DataFrameProcessor:
         """
         data_frame[column_name] = data_frame[column_name].fillna(value)
 
-
     @staticmethod
-    def add_day_column(data_frame: pd.DataFrame, date_column_name: str, time_column_name: str,
-                       day_column_name: Optional[str] = 'Day', fraction_to_time: bool = False) -> None:
-        """
-        Add a "Day" column to the DataFrame using the specified date and time columns.
+    def add_day_column(data_frame: pd.DataFrame, date_column_name: str,
+                       time_column_name: str, day_plus_time_column_name: str = "Day + Time",
+                       day_column_name: str = "Day") -> None:
 
-        :param data_frame:
-        :param date_column_name: The name of the date column.
-        :param time_column_name: The name of the time column.
-        :param day_column_name: The name for the new "Day" column. Defaults to 'Day'.\
-        """
+        data_frame[day_plus_time_column_name] = pd.to_datetime(data_frame[date_column_name] + ' ' +
+                                                               data_frame[time_column_name], format='%d/%m/%Y %H:%M')
 
-        # def formula_fraction_to_time(fraction):
-        #     total_seconds = fraction * 24 * 60 * 60
-        #     return str(datetime.timedelta(seconds=total_seconds))
-        #
-        # # Convert fraction of time into time
-        # if fraction_to_time:
-        #     data_frame[time_column_name] = data_frame[time_column_name].apply(formula_fraction_to_time)
-        #
-        # # Convert date column to datetime using the "day / month / year" format
-        # data_frame[date_column_name] = pd.to_datetime(data_frame[date_column_name], format='%d/%m/%Y')
-        #
-        # # Convert time column to string
-        # data_frame[time_column_name] = data_frame[time_column_name].astype(str)
-        #
-        # # # creating "Day" column with the "Date" + "Time" columns
-        # # data_frame[day_column_name] = pd.to_datetime(
-        # #     data_frame[date_column_name].astype(str) + ' ' + data_frame[time_column_name].astype(str))
-        #
-        # # Creating "Day" column with the "Date" + "Time" columns
-        # data_frame[day_column_name] = pd.to_datetime(
-        #     data_frame[date_column_name].dt.strftime('%Y-%m-%d') + ' ' + data_frame[time_column_name])
-        #
-        # # Set the "Day" column with the start point at the first row. So row zero is day zero
-        # data_frame[day_column_name] = data_frame[day_column_name] - data_frame.at[0, day_column_name]
-
-        def formula_fraction_to_time(fraction):
-            total_seconds = fraction * 24 * 60 * 60
-            return str(datetime.timedelta(seconds=total_seconds))
-
-        # Convert fraction of time into time
-        if fraction_to_time:
-            data_frame[time_column_name] = data_frame[time_column_name].apply(formula_fraction_to_time)
-
-        # Convert date column to datetime using the "day / month / year" format
-        data_frame[date_column_name] = pd.to_datetime(data_frame[date_column_name], format='%d/%m/%Y')
-
-        # Convert time column to string
-        data_frame[time_column_name] = data_frame[time_column_name].astype(str)
-
-        # Creating "Day" column with the "Date" + "Time" columns
-        data_frame[day_column_name] = pd.to_datetime(
-            data_frame[date_column_name].dt.strftime('%Y-%m-%d') + ' ' + data_frame[time_column_name])
-
-        # Set the "Day" column with the start point at the first row. So row zero is day zero
-        data_frame[day_column_name] = data_frame[day_column_name] - data_frame.at[0, day_column_name]
+        data_frame[day_column_name] = (data_frame[day_plus_time_column_name] -
+                                       data_frame[day_plus_time_column_name].iloc[0]) / pd.Timedelta(days=1)
 
     @staticmethod
     def replace_position_column(data_frame: pd.DataFrame, name_replaced_column: str,
