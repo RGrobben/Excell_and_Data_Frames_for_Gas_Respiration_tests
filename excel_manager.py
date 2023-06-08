@@ -224,6 +224,7 @@ class ExcelManager:
             -------
             pd.DataFrame
                 The loaded data as a pandas DataFrame, with the first row of the loaded range as headers.
+                :param column_names:
                 :param sheet_name:
                 :param start_row:
                 :param start_column:
@@ -355,5 +356,3 @@ class ExcelManager:
 
     def get_dict_constants_data_classes(self) -> {str, pd.DataFrame}:
         return self.dict_constants_data_classes
-
-
