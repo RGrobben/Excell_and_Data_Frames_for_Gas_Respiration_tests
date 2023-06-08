@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from standard_gas_composition_calculations import MolesProduced, CumulativeProductionGasPhase, GasComposition, \
-    MolGasCompositionCalculations
+    MolGasCompositionCalculations, CarbonInAqueousPhase
 
 
 class TestGasComposition(unittest.TestCase):
@@ -155,7 +155,7 @@ class TestMolesProduced(unittest.TestCase):
         df["Total Carbon"] = df["Total Carbon"].fillna(0)
         expected_output["Total Carbon"] = expected_output["Total Carbon"].fillna(0)
         self.assertIsInstance(df, pd.DataFrame)
-        for i in range(1, len(flush)-1):
+        for i in range(1, len(flush) - 1):
             self.assertAlmostEqual(expected_output["mCTot_b"][i], df["mCTot_b"][i], places=5)
             self.assertAlmostEqual(expected_output["mCTot_a"][i], df["mCTot_a"][i], places=5)
             self.assertAlmostEqual(expected_output["flush"][i], df["flush"][i], places=5)
@@ -196,7 +196,6 @@ class TestMolesProduced(unittest.TestCase):
 
 class TestCumulativeOperation(unittest.TestCase):
     def setUp(self):
-
         self.molar_mass_carbon = 12.01
         self.dry_mass_sample = 2.5
 
@@ -226,8 +225,63 @@ class TestCumulativeOperation(unittest.TestCase):
         expected_result = [0, 999, 180150, 240200, 999, 360300]
 
         # Call the method under test
-        CumulativeProductionGasPhase.carbon_gas_dry_mass_cumulative(df, 'name_column', 'name_column_mCTot_produced_cumulative',
+        CumulativeProductionGasPhase.carbon_gas_dry_mass_cumulative(df, 'name_column',
+                                                                    'name_column_mCTot_produced_cumulative',
                                                                     12.01, 2.0, 'name_column_flush', 0)
         df["name_column"] = df["name_column"].fillna(999)
         # Check if the result matches the expected result
         self.assertListEqual(df['name_column'].tolist(), expected_result)
+
+
+class TestCarbonInAqueousPhase(unittest.TestCase):
+    def test_partial_pressure_carbon_dioxide_before_sampling(self):
+        name_column = 'partial pressure CO2_b'
+        column_name_pressure_before_sampling = "pressure before sampling"
+        column_name_corrected_carbon_dioxide_in_percentage = "CO2-corr [%]"
+
+        data = {
+            column_name_pressure_before_sampling: [1117.44, 960, 962.2, 1104.6, 954],
+            column_name_corrected_carbon_dioxide_in_percentage: [0.03, 1.52238806, 2.330979785, 0.759675598,
+                                                                 2.625989573]
+        }
+        df = pd.DataFrame(data)
+
+        CarbonInAqueousPhase.partial_pressure_carbon_dioxide_before_sampling(
+            data_frame=df,
+            name_column=name_column,
+            column_name_pressure_before_sampling=column_name_pressure_before_sampling,
+            column_name_corrected_carbon_dioxide_in_percentage=column_name_corrected_carbon_dioxide_in_percentage
+        )
+
+        expected_partial_pressure_values = [33.5232, 1461.492537, 2242.868749, 839.1376655, 2505.194053]
+
+        for i in range(5):
+            self.assertAlmostEqual(data[column_name_pressure_before_sampling][i],
+                                   df[column_name_pressure_before_sampling][i], places=5)
+            self.assertAlmostEqual(data[column_name_corrected_carbon_dioxide_in_percentage][i],
+                                   df[column_name_corrected_carbon_dioxide_in_percentage][i], places=5)
+            self.assertAlmostEqual(expected_partial_pressure_values[i],
+                                   df[name_column][i], places=5)
+
+    def test_carbon_dioxide_in_aqueous_phase_mol_per_m3(self):
+        name_column = "CO2_aq [mol/m3]"
+        column_name_pp_co2_bs = "partial pressure CO2_b"
+
+        data = {column_name_pp_co2_bs: [33.5232, 1461.492537, 2242.868749, 839.1376655, 2505.194053]}
+        df = pd.DataFrame(data)
+
+        CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol_per_m3(
+            data_frame=df,
+            name_column=name_column,
+            column_name_PP_CO2_bs=column_name_pp_co2_bs
+        )
+        expected_values_co2_aq_mol_per_m3 = [1.753263360000000E-01,
+                                             7.643605970149250E+00,
+                                             1.173020355933840E+01,
+                                             4.388689990760700E+00,
+                                             1.310216489669820E+01,
+]
+
+        for i in range(5):
+            self.assertAlmostEqual(data[column_name_pp_co2_bs][i], df[column_name_pp_co2_bs][i], places=5)
+            self.assertAlmostEqual(expected_values_co2_aq_mol_per_m3[i], df[name_column][i], places=5)
