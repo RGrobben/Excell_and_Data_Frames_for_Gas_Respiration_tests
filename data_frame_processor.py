@@ -29,9 +29,6 @@ class DataFrameProcessor:
         data_frame[date_column_name] = data_frame[date_column_name].astype(str)
         data_frame[time_column_name] = data_frame[time_column_name].astype(str)
 
-        print(data_frame[date_column_name])
-        print(data_frame[time_column_name])
-
         data_frame[day_plus_time_column_name] = pd.to_datetime(data_frame[date_column_name] + ' ' +
                                                                data_frame[time_column_name], dayfirst=True)
 
