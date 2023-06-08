@@ -111,7 +111,73 @@ class ExcelManager:
 
         return data_frame
 
-    import pandas as pd
+    def load_sheet_table_with_input_header(
+            self,
+            sheet_name: str,
+            start_row: int,
+            column_names: [str],
+            start_column: int = None,
+            end_row: int = None,
+            end_column: int = None,
+            values_only: bool = True,
+            data_only: bool = False
+    ):
+        """
+            Load a portion of an Excel sheet as a pandas DataFrame.
+
+            Parameters
+            ----------
+            sheet_name : str
+                The name of the sheet to load.
+            start_row : int
+                The first row of the range to load.
+            start_column : int, optional
+                The first column of the range to load. If None, starts from the first column.
+            end_row : int, optional
+                The last row of the range to load. If None, loads until the last row.
+            end_column : int, optional
+                The last column of the range to load. If None, loads until the last column.
+
+            Raises
+            ------
+            Exception
+                If the workbook has not been loaded.
+
+            Returns
+            -------
+            pd.DataFrame
+                The loaded data as a pandas DataFrame, with the first row of the loaded range as headers.
+                :param column_names:
+                :param sheet_name:
+                :param start_row:
+                :param start_column:
+                :param end_row:
+                :return:
+                :param end_column:
+                :param data_only:
+                :param values_only:
+            """
+
+        if data_only is not None:
+            workbook = self.workbook_values
+        else:
+            workbook = self.workbook_formula
+
+        if not workbook:
+            raise Exception("Workbook is not loaded.")
+
+        sheet = workbook[sheet_name]
+
+        data = list(sheet.iter_rows(min_row=start_row,
+                                    min_col=start_column,
+                                    max_row=end_row,
+                                    max_col=end_column,
+                                    values_only=values_only))
+
+        values = data[1:]
+        data_frame = pd.DataFrame(data=values, columns=column_names)
+
+        return data_frame
 
     def load_constants_as_data_frame(
             self,
@@ -187,74 +253,6 @@ class ExcelManager:
                 setattr(data_class_instance, field.name, constants_dict[field.name])
 
         return data_class_instance
-
-    def load_sheet_table_with_input_header(
-            self,
-            sheet_name: str,
-            start_row: int,
-            column_names: [str],
-            start_column: int = None,
-            end_row: int = None,
-            end_column: int = None,
-            values_only: bool = True,
-            data_only: bool = False
-    ):
-        """
-            Load a portion of an Excel sheet as a pandas DataFrame.
-
-            Parameters
-            ----------
-            sheet_name : str
-                The name of the sheet to load.
-            start_row : int
-                The first row of the range to load.
-            start_column : int, optional
-                The first column of the range to load. If None, starts from the first column.
-            end_row : int, optional
-                The last row of the range to load. If None, loads until the last row.
-            end_column : int, optional
-                The last column of the range to load. If None, loads until the last column.
-
-            Raises
-            ------
-            Exception
-                If the workbook has not been loaded.
-
-            Returns
-            -------
-            pd.DataFrame
-                The loaded data as a pandas DataFrame, with the first row of the loaded range as headers.
-                :param column_names:
-                :param sheet_name:
-                :param start_row:
-                :param start_column:
-                :param end_row:
-                :return:
-                :param end_column:
-                :param data_only:
-                :param values_only:
-            """
-
-        if data_only is not None:
-            workbook = self.workbook_values
-        else:
-            workbook = self.workbook_formula
-
-        if not workbook:
-            raise Exception("Workbook is not loaded.")
-
-        sheet = workbook[sheet_name]
-
-        data = list(sheet.iter_rows(min_row=start_row,
-                                    min_col=start_column,
-                                    max_row=end_row,
-                                    max_col=end_column,
-                                    values_only=values_only))
-
-        values = data[1:]
-        data_frame = pd.DataFrame(data=values, columns=column_names)
-
-        return data_frame
 
     @staticmethod
     def replace_table_in_specific_sheet_with_data_frame(
