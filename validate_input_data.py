@@ -3,6 +3,20 @@ from datetime import datetime
 import pandas as pd
 
 
+def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str) -> []:
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name]
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+        if not isinstance(value, (float, int)):
+            invalid_rows.append(index)
+
+    if len(invalid_rows) > 0:
+        return invalid_rows
+    else:
+        return True
+
+
 class ValidateInputData:
     def __init__(self, data_frame: pd.DataFrame):
         self.data_frame = data_frame
@@ -29,9 +43,6 @@ class ValidateInputData:
         pass
 
     def validate_if_time_plus_date_is_chronologically(self):
-        pass
-
-    def _validate_if_there_is_a_float_in_cell(self):
         pass
 
     def validate_if_there_are_P_atmosphere(self):

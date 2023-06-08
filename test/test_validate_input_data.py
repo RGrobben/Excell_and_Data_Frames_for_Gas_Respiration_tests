@@ -3,7 +3,27 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from validate_input_data import ValidateInputData
+from validate_input_data import ValidateInputData, validate_if_there_is_a_float_or_integer_in_cell
+
+
+class DataFrameValidationTest(unittest.TestCase):
+    def test_valid_data_frame(self):
+        # Create a valid DataFrame with float and integer values
+        data = {'ColumnA': [1, 2.5, 3, 4.7, 5], 'ColumnB': [1.2, 2, 3.8, 4, 5]}
+        df = pd.DataFrame(data)
+
+        # Call the function and expect an empty list as the result
+        result = validate_if_there_is_a_float_or_integer_in_cell(df, 'ColumnA')
+        self.assertEqual(result, True)
+
+    def test_invalid_data_frame(self):
+        # Create an invalid DataFrame with non-numeric values
+        data = {'ColumnA': [1, '2.5', 3, 'abc', 5], 'ColumnB': [1.2, 2, 3.8, 4, 5]}
+        df = pd.DataFrame(data)
+
+        # Call the function and expect a list of invalid row indices
+        result = validate_if_there_is_a_float_or_integer_in_cell(df, 'ColumnA')
+        self.assertEqual(result, [1, 3])
 
 
 # class TestValidateInputData_:
