@@ -308,7 +308,7 @@ class ExcelManager:
     def fill_dict_panda_data_frames(self,
                                     data_frame: pd.DataFrame,
                                     sheets: list[str],
-                                    print_process: bool = True,
+                                    print_process: bool = False,
                                     ) -> None:
 
         sheet_names = sheets
@@ -325,7 +325,7 @@ class ExcelManager:
     def fill_dict_constants_data_frames(self,
                                         data_frame: pd.DataFrame,
                                         sheets: list[str],
-                                        print_process: bool = True,
+                                        print_process: bool = False,
                                         ) -> None:
 
         sheet_names = sheets
@@ -342,7 +342,7 @@ class ExcelManager:
     def fill_dict_constants_data_classes(self,
                                          data_class: Constants_Sample,
                                          sheets: list[str],
-                                         print_process: bool = True,
+                                         print_process: bool = False,
                                          ) -> None:
         sheet_names = sheets
 
