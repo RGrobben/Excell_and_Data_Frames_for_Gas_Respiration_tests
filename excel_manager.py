@@ -308,7 +308,7 @@ class ExcelManager:
     def fill_dict_panda_data_frames(self,
                                     data_frame: pd.DataFrame,
                                     sheets: list[str],
-                                    print_process: bool = False,
+                                    print_process: False | True = False,
                                     ) -> None:
 
         sheet_names = sheets
@@ -316,7 +316,7 @@ class ExcelManager:
         for sheet_name in sheet_names:
             self.dict_panda_data_frames[sheet_name] = data_frame
 
-            if print_process is not None:
+            if print_process is not False:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_panda_data_frames(self) -> {str, pd.DataFrame}:
@@ -325,7 +325,7 @@ class ExcelManager:
     def fill_dict_constants_data_frames(self,
                                         data_frame: pd.DataFrame,
                                         sheets: list[str],
-                                        print_process: bool = False,
+                                        print_process: False | True = False,
                                         ) -> None:
 
         sheet_names = sheets
@@ -333,7 +333,7 @@ class ExcelManager:
         for sheet_name in sheet_names:
             self.dict_constants_data_frames[sheet_name] = data_frame
 
-            if print_process is not None:
+            if print_process is not False:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_constants_data_frames(self) -> {str, pd.DataFrame}:
@@ -342,14 +342,14 @@ class ExcelManager:
     def fill_dict_constants_data_classes(self,
                                          data_class: Constants_Sample,
                                          sheets: list[str],
-                                         print_process: bool = False,
+                                         print_process: False | True = False,
                                          ) -> None:
         sheet_names = sheets
 
         for sheet_name in sheet_names:
             self.dict_constants_data_classes[sheet_name] = data_class
 
-            if print_process is not None:
+            if print_process is not False:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_constants_data_classes(self) -> {str, pd.DataFrame}:
