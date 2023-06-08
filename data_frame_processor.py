@@ -24,13 +24,13 @@ class DataFrameProcessor:
     @staticmethod
     def add_day_column(data_frame: pd.DataFrame, date_column_name: str,
                        time_column_name: str, day_plus_time_column_name: str = "Day + Time",
-                       day_column_name: str = "Day") -> None:
+                       day_column_name: str = "Day", dayfirst: bool = False) -> None:
 
         data_frame[date_column_name] = data_frame[date_column_name].astype(str)
         data_frame[time_column_name] = data_frame[time_column_name].astype(str)
 
         data_frame[day_plus_time_column_name] = pd.to_datetime(data_frame[date_column_name] + ' ' +
-                                                               data_frame[time_column_name], dayfirst=True)
+                                                               data_frame[time_column_name], dayfirst=dayfirst)
 
         data_frame[day_column_name] = (data_frame[day_plus_time_column_name] -
                                        data_frame[day_plus_time_column_name].iloc[0]) / pd.Timedelta(days=1)
