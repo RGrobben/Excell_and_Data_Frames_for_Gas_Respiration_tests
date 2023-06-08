@@ -6,11 +6,19 @@ from openpyxl import load_workbook
 
 class NiceExcelFunction:
     @staticmethod
-    def get_column_index(column_letter):
+    def get_column_index_from_letter(column_letter):
         index = 0
         for char in column_letter:
             index = index * 26 + (ord(char.upper()) - ord('A')) + 1
         return index
+
+    @staticmethod
+    def get_column_letter_from_index(index):
+        letters = ''
+        while index:
+            index, remainder = divmod(index - 1, 26)
+            letters = chr(65 + remainder) + letters
+        return letters
 
     @staticmethod
     def find_string_index(excel_file_path: str,
