@@ -40,7 +40,5 @@ class TestDataFrameProcessor(unittest.TestCase):
                               24.81111111110660000, 27.78333333333280000, 27.83055555555620000, 29.75694444443800000,
                               29.80208333332850000, 34.97847222221750000, 35.01805555555620000]
 
-        print(df[day_plus_time_name])
-        print(df[day_column_name])
         for i in range(len(expected_vales_day)):
             self.assertAlmostEqual(expected_vales_day[i], df[day_column_name][i])
