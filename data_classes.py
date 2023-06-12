@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 
 
 @dataclass()
@@ -12,7 +13,7 @@ class Constants_Sample:
     henryeff_20: float = 5.23 ** -3
 
 
-@dataclass()
+@dataclass(Enum)
 class FillType:
     solid = "solid"
     gradient = "gradient"
@@ -21,7 +22,7 @@ class FillType:
 
 
 @dataclass()
-class OwnColors:
+class OwnColors(Enum):
     # RGB codes of colors
     red = "FFFF0000"
     blue = "FF0000FF"
