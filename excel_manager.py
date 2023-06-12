@@ -6,6 +6,7 @@ from typing import List
 import pandas as pd
 from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.workbook import Workbook
 
 from data_classes import Constants_Sample
 
@@ -354,3 +355,15 @@ class ExcelManager:
 
     def get_dict_constants_data_classes(self) -> {str, pd.DataFrame}:
         return self.dict_constants_data_classes
+
+    def create_new_workbook(self, data_only: bool = False, **kwargs) -> Workbook:
+        return load_workbook(filename=self.file_path, data_only=data_only, **kwargs)
+
+    @staticmethod
+    def create_new_workbook(workbook, path):
+        """
+        Save a workbook to the specified directory path.
+        :param workbook: The workbook to save.
+        :param path: The directory path to save the workbook.
+        """
+        workbook.save(path)
