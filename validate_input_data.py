@@ -170,6 +170,28 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_parallel
 
+    def GC_method(self):
+        pass
+
+    def fill_no_or_no_specific_string(self):
+        pass #with different color as default
+
+    def Weight(self):
+        pass
+
+    def fill_no_weight(self):
+        pass
+
+    def date(self):
+        pass
+
+    def time(self):
+        pass
+
+    def fill_no_correct_date_time(self):
+        pass
+
+# TODO: write unit tests!
 
 class ValidateInputDataStatistics:
     pass
