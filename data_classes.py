@@ -21,7 +21,7 @@ class FillType:
 
 
 @dataclass()
-class OwnColors():
+class OwnColors:
     # RGB codes of colors
     red = "FFFF0000"
     blue = "FF0000FF"

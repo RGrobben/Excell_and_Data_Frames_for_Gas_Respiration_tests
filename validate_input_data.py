@@ -33,8 +33,8 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
     :param workbook: The workbook
     :param dict_sheet_name_column_names_indexes: {sheet_name: {column_name: indexes}}
     :param header_row: the row where the header is.
-    :param color: the color from the Color class.
-    :param fill_type: Fill type from the FillType class
+    :param color: the colorcode based on RGB colors
+    :param fill_type: Fill type: "solid", "gradient", "patter", "None"
     :param start_row_values_table_in_excel: the starting row of the values of the table in Excel. In Excel the rows
     are starting with 1.
     """
@@ -45,16 +45,12 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
         if show_process is True:
             print(f"started with {sheet_name}")
         for column_name, indexes in sheet_data.items():
-            print(column_name)
             column_letter = NiceExcelFunction.find_column_name_excel_index_based_on_column_name_string_in_given_row(
                 workbook=workbook, sheet_name=sheet_name, search_string=column_name, header_row=header_row)
-            print(column_letter)
             for index in indexes:
                 index_row_in_excel = start_row_values_table_in_excel + index
                 column_and_row_excel_combination = column_letter + str(index_row_in_excel)
                 sheet[column_and_row_excel_combination].fill = color_fill
-            if show_process is True:
-                print(f"{column_name} is done")
 
 
 class validate_if_all_cells_are_correctly_filled:
@@ -110,8 +106,10 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_Excel_indexes_no_int_or_float
 
-    def fill_wrong_cells_in_excel_no_int_or_float(self, workbook, header_row: int, color: str, fill_type: str,
-                                                  start_row_values_table_in_excel: int = 1,
+    def fill_wrong_cells_in_excel_no_int_or_float(self, workbook, header_row: int,
+                                                  start_row_values_table_in_excel: int,
+                                                  color: str = "FFFF00",
+                                                  fill_type: str = "solid",
                                                   show_process: bool = False):
 
         style_color_cells_with_given_indexes(workbook=workbook,
