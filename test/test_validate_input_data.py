@@ -3,7 +3,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from validate_input_data import ValidateInputData, validate_if_there_is_a_float_or_integer_in_cell
+from validate_input_data import validate_if_there_is_a_float_or_integer_in_cell, \
+    validate_if_there_is_a_specific_string
 
 
 class DataFrameValidationTest(unittest.TestCase):
@@ -66,3 +67,34 @@ class TestValidateInputData(unittest.TestCase):
         result = validator.validate_if_there_are_dates(self.date_column)
         expected = "The following rows have wrong dates [1]"
         self.assertEqual(expected, result)
+
+
+class TestValidation(unittest.TestCase):
+
+    def setUp(self):
+        # Create a sample DataFrame for testing
+        data = {'Column1': ['apple', 'banana', 'orange', 'grape'],
+                'Column2': ['apple', 'banana', 'kiwi', 'melon']}
+        self.df = pd.DataFrame(data)
+
+        # Define the specific strings to validate against
+        self.specific_strings = ['apple', 'banana']
+
+    def test_validate_if_there_is_a_specific_string_1_return_true(self):
+        # Test case 1: Valid values
+        column_name, result = validate_if_there_is_a_specific_string(self.df, 'Column1', self.specific_strings)
+        self.assertEqual(column_name, 'Column1')
+        self.assertTrue(result)
+
+    def test_validate_if_there_is_a_specific_string_2_return_indexes(self):
+        # Test case 2: Invalid values
+        column_name, result = validate_if_there_is_a_specific_string(self.df, 'Column2', self.specific_strings)
+        self.assertEqual(column_name, 'Column2')
+        self.assertEqual(result, [2, 3])
+
+    def test_validate_if_there_is_a_specific_string_3_return_indexes(self):
+        # Test case 3: Start row values table in Excel
+        column_name, result = validate_if_there_is_a_specific_string(self.df, 'Column2', self.specific_strings,
+                                                                     start_row_values_table_in_excel=2)
+        self.assertEqual(column_name, 'Column2')
+        self.assertEqual(result, [4, 5])

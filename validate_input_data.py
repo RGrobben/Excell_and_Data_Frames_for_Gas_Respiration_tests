@@ -68,6 +68,21 @@ def validate_if_there_is_a_string(data_frame: pd.DataFrame, column_name: str,
         return column_name, True
 
 
+def validate_if_there_is_a_specific_string(data_frame: pd.DataFrame, column_name: str, specific_string: [str],
+                                           start_row_values_table_in_excel: int = 0) -> tuple:
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name]
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+        if  pd.isnull(value) or value not in specific_string:
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name, invalid_rows
+    else:
+        return column_name, True
+
+
 class validate_if_all_cells_are_correctly_filled:
     def __init__(self, dict_data_frames: {str, pd.DataFrame}):
         """
