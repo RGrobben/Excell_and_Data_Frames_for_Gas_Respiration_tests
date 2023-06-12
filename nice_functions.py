@@ -1,7 +1,9 @@
 from typing import Tuple, Optional
 
+import openpyxl
 import pandas as pd
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
 
 class NiceExcelFunction:
@@ -55,6 +57,33 @@ class NiceExcelFunction:
                 if iteration_count >= max_iterations:
                     # Reached the maximum number of iterations
                     return None, None
+
+    @staticmethod
+    def find_column_name_excel_index_based_on_column_name_string_in_given_row(workbook,
+                                                                              sheet_name: str,
+                                                                              search_string: str,
+                                                                              header_row: int,
+                                                                              ) -> str:
+
+        # Load the workbook and select the sheet
+        wb = load_workbook(workbook)
+        sheet = wb[sheet_name]
+
+        # Get the maximum column index
+        max_column = sheet.max_column
+
+        # Iterate over the cells in the header row
+        for column in range(1, max_column + 1):
+            cell = sheet.cell(row=header_row, column=column)
+            cell_value = str(cell.value)
+
+            # Check if the search string is found in the cell value
+            if search_string in cell_value:
+                return get_column_letter(cell.column)
+
+        # If the search string is not found, raise an exception
+        raise ValueError(f"Search string '{search_string}' not found in the header row.")
+
 
     @staticmethod
     def get_cell_value_pandas(file_path, sheet_name, cell):
