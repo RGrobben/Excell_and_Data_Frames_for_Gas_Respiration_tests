@@ -93,10 +93,10 @@ class validate_if_all_cells_are_correctly_filled:
         self.sheet_names = self.dict_data_frames.keys()
 
         self.dict_indexes_as_panda_indexes_no_int_or_float = None
-        self.dict_indexes_as_Excel_indexes_no_int_or_float = None
+        self.dict_indexes_as_pandas_incorrect_id_parallel = None
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
-                                                           with_feedback_when_column_is_oke: bool = False,
+                                                           with_feedback_true_when_column_is_oke: bool = False,
                                                            show_process: bool = False) -> {}:
         dict_indexes_as_panda_indexes_no_int_or_float = {}
         for sheet_name in self.sheet_names:
@@ -105,7 +105,7 @@ class validate_if_all_cells_are_correctly_filled:
             for column_name in list_column_names_to_be_checked:
                 indexes = validate_if_there_is_a_float_or_integer_in_cell(data_frame=data_frame,
                                                                           column_name=column_name)
-                if indexes[1] is not True and not with_feedback_when_column_is_oke:
+                if indexes[1] is not True and not with_feedback_true_when_column_is_oke:
                     dict_indexes_as_panda_indexes_no_int_or_float[sheet_name][column_name] = indexes[1]
 
                 if show_process:
@@ -114,27 +114,6 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_panda_indexes_no_int_or_float = dict_indexes_as_panda_indexes_no_int_or_float
 
         return dict_indexes_as_panda_indexes_no_int_or_float
-
-    def fill_dict_indexes_as_Excel_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
-                                                           with_feedback_when_column_is_oke: bool = False,
-                                                           show_process: bool = False) -> {}:
-
-        dict_indexes_as_Excel_indexes_no_int_or_float = {}
-        for sheet_name in self.sheet_names:
-            dict_indexes_as_Excel_indexes_no_int_or_float[sheet_name] = {}
-            data_frame = self.dict_data_frames[sheet_name]
-            for column_name in list_column_names_to_be_checked:
-                indexes = validate_if_there_is_a_float_or_integer_in_cell(data_frame=data_frame,
-                                                                          column_name=column_name)
-                if indexes[1] is not True and not with_feedback_when_column_is_oke:
-                    dict_indexes_as_Excel_indexes_no_int_or_float[sheet_name][column_name] = indexes[1]
-
-                if show_process:
-                    print(f"{sheet_name}  with column {column_name} is done")
-
-        self.dict_indexes_as_Excel_indexes_no_int_or_float = dict_indexes_as_Excel_indexes_no_int_or_float
-
-        return dict_indexes_as_Excel_indexes_no_int_or_float
 
     def fill_wrong_cells_in_excel_no_int_or_float(self, workbook, header_row: int,
                                                   start_row_values_table_in_excel: int,
@@ -150,6 +129,28 @@ class validate_if_all_cells_are_correctly_filled:
                                              fill_type=fill_type,
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
+
+    def fill_wrong_cells_sample_id_end_parallel(self, list_column_names_to_be_checked: [str],
+                                                specific_string: [str],
+                                                with_feedback_true_when_column_is_oke: bool = False,
+                                                show_process: bool = False ) -> {}:
+
+        dict_indexes_as_pandas_incorrect_id_parallel = {}
+        for sheet_name in self.sheet_names:
+            dict_indexes_as_pandas_incorrect_id_parallel[sheet_name] = {}
+            data_frame = self.dict_data_frames[sheet_name]
+            for column_name in list_column_names_to_be_checked:
+                indexes = validate_if_there_is_a_specific_string(data_frame=data_frame, column_name=column_name,
+                                                                 specific_string=specific_string)
+                if indexes[1] is not True and not with_feedback_true_when_column_is_oke:
+                    dict_indexes_as_pandas_incorrect_id_parallel[sheet_name][column_name] = indexes[1]
+
+                if show_process:
+                    print(f"{sheet_name}  with column {column_name} is done")
+
+        self.dict_indexes_as_pandas_incorrect_id_parallel = dict_indexes_as_pandas_incorrect_id_parallel
+
+        return dict_indexes_as_pandas_incorrect_id_parallel
 
 
 class ValidateInputDataStatistics:
