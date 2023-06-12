@@ -360,7 +360,7 @@ class ExcelManager:
         return load_workbook(filename=self.file_path, data_only=data_only, **kwargs)
 
     @staticmethod
-    def create_new_workbook(workbook, path):
+    def make_excel_based_on_workbook(workbook, path):
         """
         Save a workbook to the specified directory path.
         :param workbook: The workbook to save.
