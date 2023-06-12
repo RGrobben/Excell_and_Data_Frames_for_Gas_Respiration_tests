@@ -53,6 +53,21 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
                 sheet[column_and_row_excel_combination].fill = color_fill
 
 
+def validate_if_there_is_a_string(data_frame: pd.DataFrame, column_name: str,
+                                  start_row_values_table_in_excel: int = 0) -> tuple:
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name]
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+        if not isinstance(value, int) or pd.isnull(value):
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name, invalid_rows
+    else:
+        return column_name, True
+
+
 class validate_if_all_cells_are_correctly_filled:
     def __init__(self, dict_data_frames: {str, pd.DataFrame}):
         """
