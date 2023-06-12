@@ -64,13 +64,18 @@ class validate_if_all_cells_are_correctly_filled:
         :type dict_data_frames: {sheet name of sample, pd.DataFrame}
         """
         self.dict_data_frames = dict_data_frames
-        self.sheet_names = self.dict_data_frames.keys
+        self.sheet_names =  self.dict_data_frames.keys()
+
+        self.dict_indexes_in_panda_no_int_or_float = None
+
+
 
     def fill_dict_indexes_in_panda_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                    with_feedback_when_column_is_oke: bool = False,
-                                                   show_process: bool = False):
+                                                   show_process: bool = False) -> {}:
         dict_indexes_in_panda_no_int_or_float = {}
         for sheet_name in self.sheet_names:
+            dict_indexes_in_panda_no_int_or_float[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
             for column_name in list_column_names_to_be_checked:
                 indexes = validate_if_there_is_a_float_or_integer_in_cell(data_frame=data_frame,
@@ -81,7 +86,9 @@ class validate_if_all_cells_are_correctly_filled:
                 if show_process:
                     print(f"{sheet_name}  with column {column_name} is done")
 
+        self.dict_indexes_in_panda_no_int_or_float = dict_indexes_in_panda_no_int_or_float
 
+        return dict_indexes_in_panda_no_int_or_float
 
 class ValidateInputData:
     def __init__(self, data_frame: pd.DataFrame):
