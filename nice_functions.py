@@ -77,7 +77,7 @@ class NiceExcelFunction:
             cell_value = str(cell.value)
 
             # Check if the search string is found in the cell value
-            if search_string in cell_value:
+            if search_string == cell_value:
                 return get_column_letter(cell.column)
 
         # If the search string is not found, raise an exception

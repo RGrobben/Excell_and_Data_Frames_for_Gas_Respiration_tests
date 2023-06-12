@@ -368,4 +368,6 @@ class ExcelManager:
         :param workbook: The workbook to save.
         :param path_directory: The directory path to save the workbook.
         """
-        workbook.save(os.path.join(path_directory, filename))
+        filepath = os.path.join(path_directory, filename)
+        filepath_with_extension = filepath + ".xlsx"
+        workbook.save(filepath_with_extension)

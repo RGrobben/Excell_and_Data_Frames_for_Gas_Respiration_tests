@@ -7,7 +7,7 @@ from data_classes import FillType, OwnColors
 from nice_functions import NiceExcelFunction
 
 
-def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str) -> []:
+def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str) -> tuple:
     invalid_rows = []
     column_in_data_frame_to_be_checked = data_frame[column_name]
     for index in column_in_data_frame_to_be_checked.index:
@@ -15,24 +15,20 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
         if not isinstance(value, (float, int)) or pd.isnull(value):
             invalid_rows.append(index)
 
-        # if isinstance(value, (float, int)):
-        #     continue
-        # if isinstance(value, type(np.nan)):
-        #     invalid_rows.append(index)
-        # else:
-        #     invalid_rows.append(index)
-
     if len(invalid_rows) > 0:
         return column_name, invalid_rows
     else:
         return column_name, True
 
+
 def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
                                          header_row: int,
-                                         color: OwnColors, fill_type: FillType,
-                                         start_row_values_table_in_excel: int = 1) -> None:
+                                         color: str, fill_type: str,
+                                         start_row_values_table_in_excel: int = 1,
+                                         show_process: bool = False) -> None:
     """
 
+    :param show_process: when you like to see the process.
     :param workbook: The workbook
     :param dict_sheet_name_column_names_indexes: {sheet_name: {column_name: indexes}}
     :param header_row: the row where the header is.
@@ -45,13 +41,19 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
 
     for sheet_name, sheet_data in dict_sheet_name_column_names_indexes.items():
         sheet = workbook[sheet_name]
+        if show_process is True:
+            print(f"started with {sheet_name}")
         for column_name, indexes in sheet_data.items():
+            print(column_name)
             column_letter = NiceExcelFunction.find_column_name_excel_index_based_on_column_name_string_in_given_row(
                 workbook=workbook, sheet_name=sheet_name, search_string=column_name, header_row=header_row)
+            print(column_letter)
             for index in indexes:
                 index_row_in_excel = start_row_values_table_in_excel + index
                 column_and_row_excel_combination = column_letter + str(index_row_in_excel)
-                sheet[column_and_row_excel_combination].style = color_fill
+                sheet[column_and_row_excel_combination].fill = color_fill
+            if show_process is True:
+                print(f"{column_name} is done")
 
 
 class validate_if_all_cells_are_correctly_filled:
