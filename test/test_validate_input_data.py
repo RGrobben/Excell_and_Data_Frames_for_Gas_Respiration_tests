@@ -98,3 +98,4 @@ class TestValidation(unittest.TestCase):
                                                                      start_row_values_table_in_excel=2)
         self.assertEqual(column_name, 'Column2')
         self.assertEqual(result, [4, 5])
+
