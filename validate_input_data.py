@@ -27,22 +27,6 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
     else:
         return column_name, True
 
-
-# def style_color_cells_with_given_indexes(workbook, sheet_name, data_frame: pd.DataFrame,
-#                                          color: Color, fill_type: FillType,
-#                                          column_name: str, list_indexes_from_data_frame: [int],
-#                                          start_row_values_table: int) -> None:
-#     color_fill = PatternFill(start_color=color, end_color=color, fill_type=fill_type)
-#
-#     sheet = workbook[sheet_name]
-#     index_column_data_frame = data_frame.columns.get_loc(column_name)
-#     column_letter = NiceExcelFunction.get_column_letter_from_index(index_column_data_frame)
-#
-#     for index in list_indexes_from_data_frame:
-#         index_row_sheet = index + start_row_values_table
-#         column_row_excel_combination = column_letter + str(index_row_sheet)
-#         sheet[column_row_excel_combination].style = color_fill
-
 def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
                                          header_row: int,
                                          color: OwnColors, fill_type: FillType,
