@@ -1,4 +1,5 @@
 import dataclasses
+import os
 import shutil
 from datetime import datetime
 from typing import List
@@ -360,10 +361,11 @@ class ExcelManager:
         return load_workbook(filename=self.file_path, data_only=data_only, **kwargs)
 
     @staticmethod
-    def make_excel_based_on_workbook(workbook, path):
+    def make_excel_based_on_workbook(workbook: Workbook, path_directory: str, filename: str) -> None:
         """
         Save a workbook to the specified directory path.
+        :param filename: file name of the new excell.
         :param workbook: The workbook to save.
-        :param path: The directory path to save the workbook.
+        :param path_directory: The directory path to save the workbook.
         """
-        workbook.save(path)
+        workbook.save(os.path.join(path_directory, filename))
