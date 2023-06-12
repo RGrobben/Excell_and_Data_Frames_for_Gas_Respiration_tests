@@ -19,3 +19,12 @@ class FillType:
     pattern = "pattern"
     none = "none"
 
+
+@dataclass()
+class colors:
+    # RGB codes of colors
+    red = "FFFF0000"
+    blue = "FF0000FF"
+    green = "FF00FF00"
+    yellow = "FFFFFF00"
+
