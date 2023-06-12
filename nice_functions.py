@@ -66,8 +66,7 @@ class NiceExcelFunction:
                                                                               ) -> str:
 
         # Load the workbook and select the sheet
-        wb = load_workbook(workbook)
-        sheet = wb[sheet_name]
+        sheet = workbook[sheet_name]
 
         # Get the maximum column index
         max_column = sheet.max_column
