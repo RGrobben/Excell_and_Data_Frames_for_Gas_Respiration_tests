@@ -110,6 +110,19 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_Excel_indexes_no_int_or_float
 
+    def fill_wrong_cells_in_excel_no_int_or_float(self, workbook, header_row: int, color: str, fill_type: str,
+                                                  start_row_values_table_in_excel: int = 1,
+                                                  show_process: bool = False):
+
+        style_color_cells_with_given_indexes(workbook=workbook,
+                                             dict_sheet_name_column_names_indexes=
+                                             self.dict_indexes_as_panda_indexes_no_int_or_float,
+                                             header_row=header_row,
+                                             color=color,
+                                             fill_type=fill_type,
+                                             start_row_values_table_in_excel=start_row_values_table_in_excel,
+                                             show_process=show_process)
+
 
 class ValidateInputData:
     def __init__(self, data_frame: pd.DataFrame):
