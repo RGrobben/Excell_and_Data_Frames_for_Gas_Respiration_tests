@@ -174,7 +174,7 @@ class validate_if_all_cells_are_correctly_filled:
         pass
 
     def fill_no_or_no_specific_string(self):
-        pass #with different color as default
+        pass # with different color as default
 
     def Weight(self):
         pass
