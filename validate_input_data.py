@@ -296,7 +296,7 @@ class validate_if_all_cells_are_correctly_filled:
                                                        color: str = "FFFF00",
                                                        fill_type: str = "solid",
                                                        show_process: bool = False):
-        # "FFFF00" is the color code for yello
+        # "FFFF00" is the color code for yellow
         style_color_cells_with_given_indexes(workbook=workbook,
                                              dict_sheet_name_column_names_indexes=
                                              self.dict_indexes_as_pandas_no_weight_when_flush,
