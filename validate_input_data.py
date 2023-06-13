@@ -1,12 +1,7 @@
-from ctypes import Union
-from typing import Tuple
 
-import numpy as np
 import pandas as pd
-import openpyxl
 from openpyxl.styles import PatternFill
 
-from data_classes import FillType, OwnColors
 from nice_functions import NiceExcelFunction
 
 
