@@ -315,8 +315,13 @@ class validate_if_all_cells_are_correctly_filled:
     def fill_no_correct_date_time(self):
         pass
 
+    def are_the_constants_filled(self):
+        pass
+
+    def fil_missing_constants(self):
+        pass
+
 
 # TODO: write unit tests!
-
 class ValidateInputDataStatistics:
     pass
