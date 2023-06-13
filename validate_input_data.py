@@ -1,3 +1,6 @@
+from ctypes import Union
+from typing import Tuple
+
 import numpy as np
 import pandas as pd
 import openpyxl
@@ -23,13 +26,13 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
 
 
 def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str,
-                                                              specific_float_or_integer: float | int | (float, int),
+                                                              specific_float_or_integer: float | int,
                                                               start_row_values_table_in_excel: int = 0) -> tuple:
     invalid_rows = []
     column_in_data_frame_to_be_checked = data_frame[column_name]
     for index in column_in_data_frame_to_be_checked.index:
         value = column_in_data_frame_to_be_checked[index]
-        if not isinstance(value, specific_float_or_integer) or pd.isnull(value):
+        if not value == specific_float_or_integer or pd.isnull(value):
             invalid_rows.append(index + start_row_values_table_in_excel)
 
     if len(invalid_rows) > 0:
@@ -84,13 +87,29 @@ def validate_if_there_is_a_string(data_frame: pd.DataFrame, column_name: str,
         return column_name, True
 
 
-def validate_if_there_is_a_specific_string(data_frame: pd.DataFrame, column_name: str, specific_string: [str],
+def validate_if_there_is_a_specific_string(data_frame: pd.DataFrame, column_name: str, specific_string: str,
                                            start_row_values_table_in_excel: int = 0) -> tuple:
     invalid_rows = []
     column_in_data_frame_to_be_checked = data_frame[column_name]
     for index in column_in_data_frame_to_be_checked.index:
         value = column_in_data_frame_to_be_checked[index]
-        if pd.isnull(value) or value not in specific_string:
+        if pd.isnull(value) or value == specific_string:
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name, invalid_rows
+    else:
+        return column_name, True
+
+
+def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.DataFrame, column_name: str,
+                                                             list_specific_string: [str],
+                                                             start_row_values_table_in_excel: int = 0) -> tuple:
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name]
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+        if pd.isnull(value) and value not in list_specific_string:
             invalid_rows.append(index + start_row_values_table_in_excel)
 
     if len(invalid_rows) > 0:
@@ -113,9 +132,7 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_pandas_incorrect_sample_id = None
         self.dict_indexes_as_pandas_incorrect_parallel = None
         self.dict_indexes_as_pandas_incorrect_gc_method = None
-        self.list_no_correct_strings = [self.dict_indexes_as_pandas_incorrect_sample_id,
-                                        self.dict_indexes_as_pandas_incorrect_parallel,
-                                        self.dict_indexes_as_pandas_incorrect_gc_method]
+        self.list_no_correct_strings = []
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
@@ -168,15 +185,16 @@ class validate_if_all_cells_are_correctly_filled:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
         self.dict_indexes_as_pandas_incorrect_sample_id = dict_indexes_as_pandas_incorrect_sample_id
+        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_sample_id)
 
         return dict_indexes_as_pandas_incorrect_sample_id
 
     def fill_dict_indexes_as_pandas_incorrect_parallel(self, column_name_to_be_checked: str,
-                                                       specific_float_or_integer: [int],
+                                                       list_specific_float_or_integer: [int],
                                                        show_process: bool = False) -> {}:
 
         dict_indexes_as_pandas_incorrect_parallel = {}
-        for sheet_name, specific_integer in zip(self.sheet_names, specific_float_or_integer):
+        for sheet_name, specific_integer in zip(self.sheet_names, list_specific_float_or_integer):
             dict_indexes_as_pandas_incorrect_parallel[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
             indexes = validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame=data_frame,
@@ -189,6 +207,7 @@ class validate_if_all_cells_are_correctly_filled:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
         self.dict_indexes_as_pandas_incorrect_parallel = dict_indexes_as_pandas_incorrect_parallel
+        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_parallel)
 
         return dict_indexes_as_pandas_incorrect_parallel
 
@@ -208,29 +227,31 @@ class validate_if_all_cells_are_correctly_filled:
         if list_specific_string is None:
             list_specific_string = ["LM", "HM", "VHM"]
         dict_indexes_as_pandas_incorrect_gc_method = {}
-        for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
+        for sheet_name in self.sheet_names:
             dict_indexes_as_pandas_incorrect_gc_method[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
-            indexes = validate_if_there_is_a_float_or_integer_in_cell(data_frame=data_frame,
-                                                                      column_name=column_name_to_be_checked)
+            indexes = validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame=data_frame,
+                                                                               column_name=column_name_to_be_checked,
+                                                                               list_specific_string=list_specific_string)
             if indexes[1] is not True:
                 dict_indexes_as_pandas_incorrect_gc_method[sheet_name][column_name_to_be_checked] = indexes[1]
             if show_process:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
-        self.dict_indexes_as_pandas_incorrect_parallel = dict_indexes_as_pandas_incorrect_gc_method
+        self.dict_indexes_as_pandas_incorrect_gc_method = dict_indexes_as_pandas_incorrect_gc_method
+        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_gc_method)
 
         return dict_indexes_as_pandas_incorrect_gc_method
 
-    # TODO: maak dit beter. Loop werkt nog niet, los wel.
-    def fill_wrong_cells_in_excel_no_or_no_specific_string_wrong_parallel(self, workbook, header_row: int,
-                                                                          start_row_values_table_in_excel: int,
-                                                                          color: str = "FF9933",
-                                                                          fill_type: str = "solid",
-                                                                          show_process: bool = False):
+    def fill_wrong_cells_in_excel_no_or_no_specific_string_or_wrong_parallel(self, workbook, header_row: int,
+                                                                             start_row_values_table_in_excel: int,
+                                                                             color: str = "FF9933",
+                                                                             fill_type: str = "solid",
+                                                                             show_process: bool = False):
 
         # this is the RGB color code for orange "FF9933"
         for dict_indexes in self.list_no_correct_strings:
+            print(dict_indexes)
             if dict_indexes is None:
                 continue
             else:
@@ -241,15 +262,6 @@ class validate_if_all_cells_are_correctly_filled:
                                                      fill_type=fill_type,
                                                      start_row_values_table_in_excel=start_row_values_table_in_excel,
                                                      show_process=show_process)
-
-        style_color_cells_with_given_indexes(workbook=workbook,
-                                             dict_sheet_name_column_names_indexes=
-                                             self.dict_indexes_as_pandas_incorrect_sample_id,
-                                             header_row=header_row,
-                                             color=color,
-                                             fill_type=fill_type,
-                                             start_row_values_table_in_excel=start_row_values_table_in_excel,
-                                             show_process=show_process)
 
     def Weight(self):
         pass
