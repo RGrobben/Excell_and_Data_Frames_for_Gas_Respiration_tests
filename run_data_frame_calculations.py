@@ -9,6 +9,8 @@ class RunDataFrameCalculationsForOneDataFrame:
     """"run the calculations on the data frame"""
     data_frame: object
 
+    # TODO: init moet ene dictionary van data frames worden. Onderstaande functies moeten met loops.
+    #  op die manier kan de loop in de run file weg.
     def __init__(self, data_frame):
         self.data_frame = data_frame
 
