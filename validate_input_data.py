@@ -134,6 +134,8 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_pandas_incorrect_gc_method = None
         self.list_no_correct_strings = []
 
+        self.dict_indexes_as_pandas_no_weight_when_flush = None
+
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
         dict_indexes_as_panda_indexes_no_int_or_float = {}
@@ -263,11 +265,46 @@ class validate_if_all_cells_are_correctly_filled:
                                                      start_row_values_table_in_excel=start_row_values_table_in_excel,
                                                      show_process=show_process)
 
-    def Weight(self):
-        pass
+    def fill_dict_indexes_as_pandas_no_weight_when_flush(self, column_name_to_be_checked: str,
+                                                         column_name_flush: str,
+                                                         show_process: bool = False) -> {}:
+        dict_indexes_as_pandas_no_weight_when_flush = {}
+        for sheet_name in self.sheet_names:
+            dict_indexes_as_pandas_no_weight_when_flush[sheet_name] = {}
+            data_frame = self.dict_data_frames[sheet_name]
+            invalid_rows = []
+            column_in_data_frame_to_be_checked = data_frame[column_name_to_be_checked]
+            column_in_data_frame_flush = data_frame[column_name_flush]
+            for index in column_in_data_frame_to_be_checked.index:
+                if column_in_data_frame_flush[index] == 1:
+                    value = column_in_data_frame_to_be_checked[index]
+                    if not isinstance(value, (float, int)) or pd.isnull(value):
+                        invalid_rows.append(index)
 
-    def fill_no_weight(self):
-        pass
+            if len(invalid_rows) > 0:
+                dict_indexes_as_pandas_no_weight_when_flush[sheet_name][column_name_to_be_checked] = invalid_rows
+
+            if show_process:
+                print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
+
+        self.dict_indexes_as_pandas_no_weight_when_flush = dict_indexes_as_pandas_no_weight_when_flush
+
+        return dict_indexes_as_pandas_no_weight_when_flush
+
+    def fill_wrong_cells_in_excel_no_weight_when_flush(self, workbook, header_row: int,
+                                                       start_row_values_table_in_excel: int,
+                                                       color: str = "FFFF00",
+                                                       fill_type: str = "solid",
+                                                       show_process: bool = False):
+        # "FFFF00" is the color code for yello
+        style_color_cells_with_given_indexes(workbook=workbook,
+                                             dict_sheet_name_column_names_indexes=
+                                             self.dict_indexes_as_pandas_no_weight_when_flush,
+                                             header_row=header_row,
+                                             color=color,
+                                             fill_type=fill_type,
+                                             start_row_values_table_in_excel=start_row_values_table_in_excel,
+                                             show_process=show_process)
 
     def date(self):
         pass
