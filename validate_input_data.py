@@ -172,16 +172,17 @@ class validate_if_all_cells_are_correctly_filled:
         return dict_indexes_as_pandas_incorrect_sample_id
 
     def fill_dict_indexes_as_pandas_incorrect_parallel(self, column_name_to_be_checked: str,
-                                                       list_specific_string: [str],
+                                                       specific_float_or_integer: [int],
                                                        show_process: bool = False) -> {}:
 
         dict_indexes_as_pandas_incorrect_parallel = {}
-        for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
+        for sheet_name, specific_integer in zip(self.sheet_names, specific_float_or_integer):
             dict_indexes_as_pandas_incorrect_parallel[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
-            indexes = validate_if_there_is_a_specific_string(data_frame=data_frame,
-                                                             column_name=column_name_to_be_checked,
-                                                             specific_string=specific_string)
+            indexes = validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame=data_frame,
+                                                                                column_name=column_name_to_be_checked,
+                                                                                specific_float_or_integer=
+                                                                                specific_integer)
             if indexes[1] is not True:
                 dict_indexes_as_pandas_incorrect_parallel[sheet_name][column_name_to_be_checked] = indexes[1]
             if show_process:
