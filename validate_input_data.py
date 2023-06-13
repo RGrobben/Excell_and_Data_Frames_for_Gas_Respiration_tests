@@ -95,6 +95,7 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_panda_indexes_no_int_or_float = None
         self.dict_indexes_as_pandas_incorrect_id = None
         self.dict_indexes_as_pandas_incorrect_parallel = None
+        self.dict_indexes_as_pandas_incorrect_gc_method = None
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
@@ -130,9 +131,9 @@ class validate_if_all_cells_are_correctly_filled:
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
 
-    def dict_indexes_as_pandas_incorrect_id(self, column_name_to_be_checked: str,
-                                            list_specific_string: [str],
-                                            show_process: bool = False) -> {}:
+    def fill_dict_indexes_as_pandas_incorrect_id(self, column_name_to_be_checked: str,
+                                                 list_specific_string: [str],
+                                                 show_process: bool = False) -> {}:
 
         dict_indexes_as_pandas_incorrect_id = {}
         for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
@@ -150,9 +151,9 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_id
 
-    def dict_indexes_as_pandas_incorrect_parallel(self, column_name_to_be_checked: str,
-                                                  list_specific_string: [str],
-                                                  show_process: bool = False) -> {}:
+    def fill_dict_indexes_as_pandas_incorrect_parallel(self, column_name_to_be_checked: str,
+                                                       list_specific_string: [str],
+                                                       show_process: bool = False) -> {}:
 
         dict_indexes_as_pandas_incorrect_parallel = {}
         for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
@@ -170,8 +171,36 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_parallel
 
-    def GC_method(self):
-        pass
+    def fill_dict_indexes_as_pandas_incorrect_gc_method(self, column_name_to_be_checked: str,
+                                                        list_specific_string: [str] = None,
+                                                        show_process: bool = False):
+        """
+        This functions returns a dictionary and fills the dictionary in the class with indexes of incorrect filled cells
+        for the GC.
+
+        :param column_name_to_be_checked: the name of the column that must be checked and represents the GC method column
+        :param list_specific_string: here can you specify the specific strings which are correct.
+                The default is set on: "LM" for Low method, "HM" for High Method, "VHM" for Very High Method
+        :param show_process: when set on True than the function shows the process.
+        :return:
+        """
+        if list_specific_string is None:
+            list_specific_string = ["LM", "HM", "VHM"]
+        dict_indexes_as_pandas_incorrect_gc_method = {}
+        for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
+            dict_indexes_as_pandas_incorrect_gc_method[sheet_name] = {}
+            data_frame = self.dict_data_frames[sheet_name]
+            indexes = validate_if_there_is_a_specific_string(data_frame=data_frame,
+                                                             column_name=column_name_to_be_checked,
+                                                             specific_string=specific_string)
+            if indexes[1] is not True:
+                dict_indexes_as_pandas_incorrect_gc_method[sheet_name][column_name_to_be_checked] = indexes[1]
+            if show_process:
+                print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
+
+        self.dict_indexes_as_pandas_incorrect_parallel = dict_indexes_as_pandas_incorrect_gc_method
+
+        return dict_indexes_as_pandas_incorrect_gc_method
 
     def fill_no_or_no_specific_string(self):
         pass # with different color as default
