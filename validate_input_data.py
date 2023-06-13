@@ -206,6 +206,7 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_gc_method
 
+    # TODO: maak dit beter. Loop werkt nog niet, los wel.
     def fill_wrong_cells_in_excel_no_or_no_specific_string(self, workbook, header_row: int,
                                                            start_row_values_table_in_excel: int,
                                                            color: str = "FF9933",
@@ -214,13 +215,23 @@ class validate_if_all_cells_are_correctly_filled:
 
         # this is the RGB color code for orange "FF9933"
         for dict_indexes in self.list_no_correct_strings:
-            style_color_cells_with_given_indexes(workbook=workbook,
-                                                 dict_sheet_name_column_names_indexes=dict_indexes,
-                                                 header_row=header_row,
-                                                 color=color,
-                                                 fill_type=fill_type,
-                                                 start_row_values_table_in_excel=start_row_values_table_in_excel,
-                                                 show_process=show_process)
+            if dict_indexes is not None:
+                style_color_cells_with_given_indexes(workbook=workbook,
+                                                     dict_sheet_name_column_names_indexes=dict_indexes,
+                                                     header_row=header_row,
+                                                     color=color,
+                                                     fill_type=fill_type,
+                                                     start_row_values_table_in_excel=start_row_values_table_in_excel,
+                                                     show_process=show_process)
+
+        style_color_cells_with_given_indexes(workbook=workbook,
+                                             dict_sheet_name_column_names_indexes=
+                                             self.dict_indexes_as_pandas_incorrect_sample_id,
+                                             header_row=header_row,
+                                             color=color,
+                                             fill_type=fill_type,
+                                             start_row_values_table_in_excel=start_row_values_table_in_excel,
+                                             show_process=show_process)
 
 
     def Weight(self):
