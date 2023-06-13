@@ -94,10 +94,10 @@ class validate_if_all_cells_are_correctly_filled:
 
         self.dict_indexes_as_panda_indexes_no_int_or_float = None
 
-        self.dict_indexes_as_pandas_incorrect_id = None
+        self.dict_indexes_as_pandas_incorrect_sample_id = None
         self.dict_indexes_as_pandas_incorrect_parallel = None
         self.dict_indexes_as_pandas_incorrect_gc_method = None
-        self.list_no_correct_strings = [self.dict_indexes_as_pandas_incorrect_id,
+        self.list_no_correct_strings = [self.dict_indexes_as_pandas_incorrect_sample_id,
                                         self.dict_indexes_as_pandas_incorrect_parallel,
                                         self.dict_indexes_as_pandas_incorrect_gc_method]
 
@@ -135,25 +135,25 @@ class validate_if_all_cells_are_correctly_filled:
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
 
-    def fill_dict_indexes_as_pandas_incorrect_id(self, column_name_to_be_checked: str,
-                                                 list_specific_string: [str],
-                                                 show_process: bool = False) -> {}:
+    def fill_dict_indexes_as_pandas_incorrect_sample_id(self, column_name_to_be_checked: str,
+                                                        list_specific_string: [str],
+                                                        show_process: bool = False) -> {}:
 
-        dict_indexes_as_pandas_incorrect_id = {}
+        dict_indexes_as_pandas_incorrect_sample_id = {}
         for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
-            dict_indexes_as_pandas_incorrect_id[sheet_name] = {}
+            dict_indexes_as_pandas_incorrect_sample_id[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
             indexes = validate_if_there_is_a_specific_string(data_frame=data_frame,
                                                              column_name=column_name_to_be_checked,
                                                              specific_string=specific_string)
             if indexes[1] is not True:
-                dict_indexes_as_pandas_incorrect_id[sheet_name][column_name_to_be_checked] = indexes[1]
+                dict_indexes_as_pandas_incorrect_sample_id[sheet_name][column_name_to_be_checked] = indexes[1]
             if show_process:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
-        self.dict_indexes_as_pandas_incorrect_id = dict_indexes_as_pandas_incorrect_id
+        self.dict_indexes_as_pandas_incorrect_sample_id = dict_indexes_as_pandas_incorrect_sample_id
 
-        return dict_indexes_as_pandas_incorrect_id
+        return dict_indexes_as_pandas_incorrect_sample_id
 
     def fill_dict_indexes_as_pandas_incorrect_parallel(self, column_name_to_be_checked: str,
                                                        list_specific_string: [str],
