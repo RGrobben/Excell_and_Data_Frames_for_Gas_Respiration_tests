@@ -22,6 +22,22 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
         return column_name, True
 
 
+def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str,
+                                                              specific_float_or_integer: float | int | (float, int),
+                                                              start_row_values_table_in_excel: int = 0) -> tuple:
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name]
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+        if not isinstance(value, specific_float_or_integer) or pd.isnull(value):
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name, invalid_rows
+    else:
+        return column_name, True
+
+
 def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
                                          header_row: int,
                                          color: str, fill_type: str,
@@ -194,9 +210,8 @@ class validate_if_all_cells_are_correctly_filled:
         for sheet_name, specific_string in zip(self.sheet_names, list_specific_string):
             dict_indexes_as_pandas_incorrect_gc_method[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
-            indexes = validate_if_there_is_a_specific_string(data_frame=data_frame,
-                                                             column_name=column_name_to_be_checked,
-                                                             specific_string=specific_string)
+            indexes = validate_if_there_is_a_float_or_integer_in_cell(data_frame=data_frame,
+                                                                      column_name=column_name_to_be_checked)
             if indexes[1] is not True:
                 dict_indexes_as_pandas_incorrect_gc_method[sheet_name][column_name_to_be_checked] = indexes[1]
             if show_process:
@@ -207,15 +222,17 @@ class validate_if_all_cells_are_correctly_filled:
         return dict_indexes_as_pandas_incorrect_gc_method
 
     # TODO: maak dit beter. Loop werkt nog niet, los wel.
-    def fill_wrong_cells_in_excel_no_or_no_specific_string(self, workbook, header_row: int,
-                                                           start_row_values_table_in_excel: int,
-                                                           color: str = "FF9933",
-                                                           fill_type: str = "solid",
-                                                           show_process: bool = False):
+    def fill_wrong_cells_in_excel_no_or_no_specific_string_wrong_parallel(self, workbook, header_row: int,
+                                                                          start_row_values_table_in_excel: int,
+                                                                          color: str = "FF9933",
+                                                                          fill_type: str = "solid",
+                                                                          show_process: bool = False):
 
         # this is the RGB color code for orange "FF9933"
         for dict_indexes in self.list_no_correct_strings:
-            if dict_indexes is not None:
+            if dict_indexes is None:
+                continue
+            else:
                 style_color_cells_with_given_indexes(workbook=workbook,
                                                      dict_sheet_name_column_names_indexes=dict_indexes,
                                                      header_row=header_row,
@@ -233,7 +250,6 @@ class validate_if_all_cells_are_correctly_filled:
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
 
-
     def Weight(self):
         pass
 
@@ -248,6 +264,7 @@ class validate_if_all_cells_are_correctly_filled:
 
     def fill_no_correct_date_time(self):
         pass
+
 
 # TODO: write unit tests!
 
