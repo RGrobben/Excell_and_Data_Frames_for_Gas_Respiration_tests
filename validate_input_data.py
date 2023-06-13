@@ -325,3 +325,9 @@ class validate_if_all_cells_are_correctly_filled:
 # TODO: write unit tests!
 class ValidateInputDataStatistics:
     pass
+
+    def outliers(self):
+        pass
+
+    def fill_outliers(self):
+        pass
