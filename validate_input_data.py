@@ -132,7 +132,7 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_pandas_incorrect_sample_id = None
         self.dict_indexes_as_pandas_incorrect_parallel = None
         self.dict_indexes_as_pandas_incorrect_gc_method = None
-        self.list_no_correct_strings = []
+        self.list_no_correct_strings_and_parallel = []
 
         self.dict_indexes_as_pandas_no_weight_when_flush = None
 
@@ -187,7 +187,7 @@ class validate_if_all_cells_are_correctly_filled:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
         self.dict_indexes_as_pandas_incorrect_sample_id = dict_indexes_as_pandas_incorrect_sample_id
-        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_sample_id)
+        self.list_no_correct_strings_and_parallel.append(dict_indexes_as_pandas_incorrect_sample_id)
 
         return dict_indexes_as_pandas_incorrect_sample_id
 
@@ -209,7 +209,7 @@ class validate_if_all_cells_are_correctly_filled:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
         self.dict_indexes_as_pandas_incorrect_parallel = dict_indexes_as_pandas_incorrect_parallel
-        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_parallel)
+        self.list_no_correct_strings_and_parallel.append(dict_indexes_as_pandas_incorrect_parallel)
 
         return dict_indexes_as_pandas_incorrect_parallel
 
@@ -241,7 +241,7 @@ class validate_if_all_cells_are_correctly_filled:
                 print(f"{sheet_name}  with column {column_name_to_be_checked} is done")
 
         self.dict_indexes_as_pandas_incorrect_gc_method = dict_indexes_as_pandas_incorrect_gc_method
-        self.list_no_correct_strings.append(dict_indexes_as_pandas_incorrect_gc_method)
+        self.list_no_correct_strings_and_parallel.append(dict_indexes_as_pandas_incorrect_gc_method)
 
         return dict_indexes_as_pandas_incorrect_gc_method
 
@@ -252,7 +252,7 @@ class validate_if_all_cells_are_correctly_filled:
                                                                              show_process: bool = False):
 
         # this is the RGB color code for orange "FF9933"
-        for dict_indexes in self.list_no_correct_strings:
+        for dict_indexes in self.list_no_correct_strings_and_parallel:
             print(dict_indexes)
             if dict_indexes is None:
                 continue
