@@ -19,7 +19,6 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
     else:
         return column_name, True
 
-
 def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str,
                                                               specific_float_or_integer: float | int,
                                                               start_row_values_table_in_excel: int = 0) -> tuple:
@@ -35,36 +34,6 @@ def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.Dat
     else:
         return column_name, True
 
-
-def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
-                                         header_row: int,
-                                         color: str, fill_type: str,
-                                         start_row_values_table_in_excel: int = 1,
-                                         show_process: bool = False) -> None:
-    """
-
-    :param show_process: when you like to see the process.
-    :param workbook: The workbook
-    :param dict_sheet_name_column_names_indexes: {sheet_name: {column_name: indexes}}
-    :param header_row: the row where the header is.
-    :param color: the colorcode based on RGB colors
-    :param fill_type: Fill type: "solid", "gradient", "patter", "None"
-    :param start_row_values_table_in_excel: the starting row of the values of the table in Excel. In Excel the rows
-    are starting with 1.
-    """
-    color_fill = PatternFill(start_color=color, end_color=color, fill_type=fill_type)
-
-    for sheet_name, sheet_data in dict_sheet_name_column_names_indexes.items():
-        sheet = workbook[sheet_name]
-        if show_process is True:
-            print(f"started with {sheet_name}")
-        for column_name, indexes in sheet_data.items():
-            column_letter = NiceExcelFunction.find_column_name_excel_index_based_on_column_name_string_in_given_row(
-                workbook=workbook, sheet_name=sheet_name, search_string=column_name, header_row=header_row)
-            for index in indexes:
-                index_row_in_excel = start_row_values_table_in_excel + index
-                column_and_row_excel_combination = column_letter + str(index_row_in_excel)
-                sheet[column_and_row_excel_combination].fill = color_fill
 
 
 def validate_if_there_is_a_string(data_frame: pd.DataFrame, column_name: str,
@@ -111,6 +80,37 @@ def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.Data
         return column_name, invalid_rows
     else:
         return column_name, True
+
+
+def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
+                                         header_row: int,
+                                         color: str, fill_type: str,
+                                         start_row_values_table_in_excel: int = 1,
+                                         show_process: bool = False) -> None:
+    """
+
+    :param show_process: when you like to see the process.
+    :param workbook: The workbook
+    :param dict_sheet_name_column_names_indexes: {sheet_name: {column_name: indexes}}
+    :param header_row: the row where the header is.
+    :param color: the colorcode based on RGB colors
+    :param fill_type: Fill type: "solid", "gradient", "patter", "None"
+    :param start_row_values_table_in_excel: the starting row of the values of the table in Excel. In Excel the rows
+    are starting with 1.
+    """
+    color_fill = PatternFill(start_color=color, end_color=color, fill_type=fill_type)
+
+    for sheet_name, sheet_data in dict_sheet_name_column_names_indexes.items():
+        sheet = workbook[sheet_name]
+        if show_process is True:
+            print(f"started with {sheet_name}")
+        for column_name, indexes in sheet_data.items():
+            column_letter = NiceExcelFunction.find_column_name_excel_index_based_on_column_name_string_in_given_row(
+                workbook=workbook, sheet_name=sheet_name, search_string=column_name, header_row=header_row)
+            for index in indexes:
+                index_row_in_excel = start_row_values_table_in_excel + index
+                column_and_row_excel_combination = column_letter + str(index_row_in_excel)
+                sheet[column_and_row_excel_combination].fill = color_fill
 
 
 class validate_if_all_cells_are_correctly_filled:
