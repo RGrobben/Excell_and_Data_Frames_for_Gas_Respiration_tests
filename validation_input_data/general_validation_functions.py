@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict, Any, List
 
 import pandas as pd
 from openpyxl.styles import PatternFill
@@ -208,3 +209,20 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
                 index_row_in_excel = start_row_values_table_in_excel + index
                 column_and_row_excel_combination = column_letter + str(index_row_in_excel)
                 sheet[column_and_row_excel_combination].fill = color_fill
+
+
+def style_color_cells_with_given_excel_indexes_and_excel_column_name(workbook, dict_sheet_name_indexes: {},
+                                                                     excel_column_name: str,
+                                                                     color: str,
+                                                                     fill_type: str,
+                                                                     show_process: bool = False) -> None:
+    color_fill = PatternFill(start_color=color, end_color=color, fill_type=fill_type)
+
+    for sheet_name, indexes in dict_sheet_name_indexes.items():
+        sheet = workbook[sheet_name]
+        if show_process is True:
+            print(f"started with {sheet_name}")
+        for index in indexes:
+            index_row_in_excel = index
+            column_and_row_excel_combination = excel_column_name + str(index_row_in_excel)
+            sheet[column_and_row_excel_combination].fill = color_fill
