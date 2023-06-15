@@ -314,9 +314,10 @@ class validate_if_all_cells_are_correctly_filled:
 
 class ValidateInputDataStatistics:
 
-    def __init__(self, dict_sheet_name_with_panda_data_frames: {int: pd.DataFrame}):
+    def __init__(self, dict_sheet_name_with_panda_data_frames: {str: pd.DataFrame}):
+
         self.dict_sheet_name_with_panda_data_frames = dict_sheet_name_with_panda_data_frames
-        self.sheet_names = self.dict_sheet_name_with_panda_data_frames.keys
+        self.sheet_names = self.dict_sheet_name_with_panda_data_frames.keys()
 
         self.dict_outliers_indexes_as_pandas = None
 
@@ -342,13 +343,12 @@ class ValidateInputDataStatistics:
 
         return dict_outliers_indexes_as_pandas
 
-
     def fill_outliers_in_excel(self, workbook, header_row: int,
                                start_row_values_table_in_excel: int,
-                               color: str = "FFFF00",
+                               color: str = "99FFCC",
                                fill_type: str = "solid",
                                show_process: bool = False):
-        # "FFFF00" is the color code for yellow
+        # "FFFF00" is the color code for light green
         style_color_cells_with_given_indexes(workbook=workbook,
                                              dict_sheet_name_column_names_indexes=
                                              self.dict_outliers_indexes_as_pandas,
@@ -357,4 +357,3 @@ class ValidateInputDataStatistics:
                                              fill_type=fill_type,
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
-
