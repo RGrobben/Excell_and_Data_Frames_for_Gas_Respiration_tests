@@ -2,7 +2,8 @@ import pandas as pd
 from typing import Dict, List, Union
 
 
-def find_column_outliers(data_frame: pd.DataFrame, column_name: str) -> Dict[str, Dict[str, List[Union[int, float]]]]:
+def find_column_outliers(data_frame: pd.DataFrame, column_name: str, return_only_indexes: bool = False)\
+        -> Dict[str, Dict[str, List[Union[int, float]]]]:
     """
     Finds outliers in a specified column of a DataFrame using the IQR method.
 
@@ -30,5 +31,8 @@ def find_column_outliers(data_frame: pd.DataFrame, column_name: str) -> Dict[str
     outliers_mask = ((data_frame[column_name] < under_boundary) | (data_frame[column_name] > outer_boundary))
     outlier_indexes = data_frame[outliers_mask].index.tolist()
     outlier_values = data_frame[column_name][outliers_mask].tolist()
+
+    if return_only_indexes:
+        return outlier_indexes
 
     return {column_name: {"indexes": outlier_indexes, "outliers": outlier_values}}

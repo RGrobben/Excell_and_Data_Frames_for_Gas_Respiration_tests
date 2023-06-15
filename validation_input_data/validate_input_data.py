@@ -1,8 +1,8 @@
 import pandas as pd
 from openpyxl.workbook import Workbook
 
-from data_classes import ConstantsSample
 from nice_functions import NiceExcelFunction
+from statistics_file.statistics import find_column_outliers
 from validation_input_data.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
     validate_if_there_is_no_specific_float_or_integer_in_cell, validate_if_there_is_a_specific_string, \
     validate_if_there_is_in_cell_one_of_the_specific_strings, validate_if_in_cell_is_correct_date_or_not_filled, \
@@ -10,6 +10,7 @@ from validation_input_data.general_validation_functions import validate_if_there
     style_color_cells_with_given_excel_indexes_and_excel_column_name
 
 
+# TODO: write unit tests!
 class validate_if_all_cells_are_correctly_filled:
     def __init__(self, dict_data_frames: {str, pd.DataFrame}):
         """
@@ -311,12 +312,49 @@ class validate_if_all_cells_are_correctly_filled:
                                                                          show_process=show_process)
 
 
-# TODO: write unit tests!
 class ValidateInputDataStatistics:
-    pass
 
-    def outliers(self):
-        pass
+    def __init__(self, dict_sheet_name_with_panda_data_frames: {int: pd.DataFrame}):
+        self.dict_sheet_name_with_panda_data_frames = dict_sheet_name_with_panda_data_frames
+        self.sheet_names = self.dict_sheet_name_with_panda_data_frames.keys
 
-    def fill_outliers(self):
-        pass
+        self.dict_outliers_indexes_as_pandas = None
+
+    def fill_dict_outliers_indexes_as_pandas(self,
+                                             list_column_names_to_be_checked: [str],
+                                             show_process: bool = False) -> {}:
+
+        dict_outliers_indexes_as_pandas = {}
+        for sheet_name in self.sheet_names:
+            dict_outliers_indexes_as_pandas[sheet_name] = {}
+            data_frame = self.dict_sheet_name_with_panda_data_frames[sheet_name]
+            for column_name in list_column_names_to_be_checked:
+                indexes = find_column_outliers(data_frame=data_frame, column_name=column_name,
+                                               return_only_indexes=True)
+
+                if len(indexes) > 0:
+                    dict_outliers_indexes_as_pandas[sheet_name][column_name] = indexes
+
+                if show_process:
+                    print(f"{sheet_name}  with column {column_name} is done")
+
+        self.dict_outliers_indexes_as_pandas = dict_outliers_indexes_as_pandas
+
+        return dict_outliers_indexes_as_pandas
+
+
+    def fill_outliers_in_excel(self, workbook, header_row: int,
+                               start_row_values_table_in_excel: int,
+                               color: str = "FFFF00",
+                               fill_type: str = "solid",
+                               show_process: bool = False):
+        # "FFFF00" is the color code for yellow
+        style_color_cells_with_given_indexes(workbook=workbook,
+                                             dict_sheet_name_column_names_indexes=
+                                             self.dict_outliers_indexes_as_pandas,
+                                             header_row=header_row,
+                                             color=color,
+                                             fill_type=fill_type,
+                                             start_row_values_table_in_excel=start_row_values_table_in_excel,
+                                             show_process=show_process)
+
