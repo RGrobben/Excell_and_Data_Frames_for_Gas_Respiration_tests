@@ -1,8 +1,5 @@
 import pandas as pd
-from typing import Any,
-
-from IPython.display import display
-
+from typing import Any
 
 class DataFrameProcessor:
     """
