@@ -1,7 +1,9 @@
 import pandas as pd
+from openpyxl.workbook import Workbook
 
 from data_classes import ConstantsSample
-from general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
+from nice_functions import NiceExcelFunction
+from validation_input_data.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
     validate_if_there_is_no_specific_float_or_integer_in_cell, validate_if_there_is_a_specific_string, \
     validate_if_there_is_in_cell_one_of_the_specific_strings, validate_if_in_cell_is_correct_date_or_not_filled, \
     validate_if_in_cell_is_correct_time_or_not_filled, style_color_cells_with_given_indexes
@@ -27,6 +29,8 @@ class validate_if_all_cells_are_correctly_filled:
         self.dict_indexes_as_pandas_no_weight_when_flush = None
         self.dict_indexes_as_pandas_incorrect_date = None
         self.dict_indexes_as_pandas_incorrect_time = None
+
+        self.dict_wrong_constants_for_each_sheet_name = None
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
@@ -257,11 +261,51 @@ class validate_if_all_cells_are_correctly_filled:
                                                  start_row_values_table_in_excel=start_row_values_table_in_excel,
                                                  show_process=show_process)
 
-    def the_area_of_constants_is_filled(self):
-        pass
+    def fill_dict_with_indexes_as_excel_when_constants_is_incorrect(self,
+                                                                    start_row_in_excel: int,
+                                                                    workbook: Workbook,
+                                                                    start_row_constants_value: int,
+                                                                    end_row_constants_value: int,
+                                                                    column_letter_values):
 
-    def fil_missing_constants(self):
-        pass
+        dict_wrong_constants_for_each_sheet_name = {}
+
+        start_col_values = NiceExcelFunction.get_column_index_from_letter(column_letter_values)
+        end_col_values = start_col_values + 1
+        for sheet_name in workbook.sheetnames:
+            indexes = []
+            sheet = workbook[sheet_name]
+            values_list = list(sheet.iter_rows(min_row=start_row_constants_value,
+                                               min_col=start_col_values,
+                                               max_row=end_row_constants_value,
+                                               max_col=end_col_values,
+                                               values_only=True))
+
+            for index, value in enumerate(values_list):
+                if not isinstance(value, float):
+                    indexes.append(index + start_row_in_excel)
+
+            if len(indexes) > 0:
+                dict_wrong_constants_for_each_sheet_name[sheet_name] = indexes
+
+        self.dict_wrong_constants_for_each_sheet_name = dict_wrong_constants_for_each_sheet_name
+
+        return dict_wrong_constants_for_each_sheet_name
+
+    def fil_wrong_cells_constants_missing_constants(self, workbook, header_row: int,
+                                                    color: str = "FF6666",
+                                                    fill_type: str = "solid",
+                                                    show_process: bool = False):
+
+        # "FF6666" is the color code for light red
+        style_color_cells_with_given_indexes(workbook=workbook,
+                                             dict_sheet_name_column_names_indexes=
+                                             self.dict_wrong_constants_for_each_sheet_name,
+                                             header_row=header_row,
+                                             color=color,
+                                             fill_type=fill_type,
+                                             start_row_values_table_in_excel=0,
+                                             show_process=show_process)
 
 
 # TODO: write unit tests!

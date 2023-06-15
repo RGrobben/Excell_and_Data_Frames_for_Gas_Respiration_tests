@@ -13,7 +13,6 @@ class ConstantsSample:
     molar_mass_carbon: float = 12
     henryeff_20: float = 5.23 ** -3
 
-    @property
     def check_all_checks(self):
         checks = [
             self.check_Rgas,
@@ -79,6 +78,7 @@ class ConstantsSample:
         if not check_if_float or check_if_float_is_oke:
             return "molar_mass_carbon is not correct"
         return True
+
 
 @dataclass
 class FillType:
