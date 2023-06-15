@@ -83,7 +83,7 @@ def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.Data
         return column_name, True
 
 
-def check_is_string_date(string: str, date_format):
+def check_is_string_date(string: str, date_format) -> bool:
     """
     Check if a string can be parsed as a valid date using the given format.
 
@@ -103,7 +103,7 @@ def check_is_string_date(string: str, date_format):
 
 def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, column_name_date: str,
                                                    format_date: str = "%Y-%m-%d",
-                                                   start_row_values_table_in_excel: int = 0):
+                                                   start_row_values_table_in_excel: int = 0) -> tuple:
     """
         Validate the indexes of a pandas DataFrame for incorrect date values in a specific column.
 
@@ -131,7 +131,7 @@ def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, col
         return column_name_date, True
 
 
-def check_is_string_time(string: str, time_format):
+def check_is_string_time(string: str, time_format) -> bool:
     """
     Check if a string can be parsed as a valid time using the given format.
 
@@ -151,7 +151,7 @@ def check_is_string_time(string: str, time_format):
 
 def validate_dict_indexes_as_pandas_incorrect_time(data_frame: pd.DataFrame, column_name_time: str,
                                                    format_time: str = "%H:%M:%S",
-                                                   start_row_values_table_in_excel: int = 0):
+                                                   start_row_values_table_in_excel: int = 0) -> tuple:
     """
     Valideer de indexen van een pandas DataFrame op onjuiste tijdwaarden in een specifieke kolom.
 
