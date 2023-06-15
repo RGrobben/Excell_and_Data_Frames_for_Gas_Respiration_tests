@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from Validation.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
+from validation_input_data.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
     validate_if_there_is_a_specific_string
 
 
