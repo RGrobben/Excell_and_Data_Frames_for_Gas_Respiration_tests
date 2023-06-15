@@ -228,6 +228,7 @@ class validate_if_all_cells_are_correctly_filled:
 
         self.dict_indexes_as_pandas_no_weight_when_flush = None
         self.dict_indexes_as_pandas_incorrect_date = None
+        self.dict_indexes_as_pandas_incorrect_time = None
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
@@ -420,9 +421,27 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_date
 
+    def fill_dict_indexes_as_pandas_incorrect_time(self, column_name_time: str, format_time: str = "%H:%M:%S",
+                                                   show_process: bool = False) -> {}:
 
-    def time(self):
-        pass
+        dict_indexes_as_pandas_incorrect_time = {}
+        for sheet_name in self.sheet_names:
+            dict_indexes_as_pandas_incorrect_time[sheet_name] = {}
+            data_frame = self.dict_data_frames[sheet_name]
+
+            indexes = validate_if_in_cell_is_correct_time_or_not_filled(data_frame=data_frame,
+                                                                        column_name_time=column_name_time,
+                                                                        format_time=format_time)
+            if indexes[1] is not True:
+                dict_indexes_as_pandas_incorrect_time[sheet_name][column_name_time] = indexes[1]
+
+            if show_process:
+                print(f"{sheet_name}  with column {column_name_time} is done")
+
+        self.dict_indexes_as_pandas_incorrect_time = dict_indexes_as_pandas_incorrect_time
+
+        return dict_indexes_as_pandas_incorrect_time
+
 
     def fill_no_correct_date_time(self):
         pass
