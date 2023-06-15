@@ -43,6 +43,7 @@ class ConstantsSampleTestCase(unittest.TestCase):
         all_checks = constants.check_all_checks
         self.assertIsInstance(all_checks, list)
         self.assertIsInstance(all_checks[0], str)
+        print(all_checks)
 
     def test_check_Rgas_incorrect(self):
         # Invalid value: Rgas is a string instead of a float
