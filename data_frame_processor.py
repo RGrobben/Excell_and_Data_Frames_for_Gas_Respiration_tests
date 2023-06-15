@@ -1,6 +1,5 @@
 import pandas as pd
-import datetime
-from typing import Any, Optional
+from typing import Any,
 
 from IPython.display import display
 
