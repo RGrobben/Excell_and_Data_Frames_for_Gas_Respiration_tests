@@ -1,38 +1,34 @@
 import pandas as pd
+from typing import Dict, List, Union
 
 
-def find_outliers_of_specific_column(data_frame: pd.DataFrame, column_name: str) -> {}:
+def find_column_outliers(data_frame: pd.DataFrame, column_name: str) -> Dict[str, Dict[str, List[Union[int, float]]]]:
     """
-    Find outliers in a DataFrame's column using the IQR method.
+    Finds outliers in a specified column of a DataFrame using the IQR method.
 
     Parameters:
-    df : pd.DataFrame
+    data_frame : pd.DataFrame
         Input DataFrame.
-    column : str
+    column_name : str
         Column name in the DataFrame to find outliers in.
 
     Returns:
-    List[Tuple[int, str]]:
-        List of tuples containing index and column name of outliers.
+    dict: A dictionary with the column name as the key. The value is another dictionary with two keys: 'indexes'
+        and 'outliers'. 'indexes' holds a list of the indices of the outliers in the original DataFrame. 'outliers'
+        contains a list of the outlier values.
     """
-    # loose Column
-    loose_column = data_frame[column_name]
-
     # Calculate the IQR of the column
-    Q1 = loose_column.quantile(0.25)
-    Q3 = loose_column.quantile(0.75)
+    Q1 = data_frame[column_name].quantile(0.25)
+    Q3 = data_frame[column_name].quantile(0.75)
     IQR = Q3 - Q1
+
+    # Define the outlier boundaries
     under_boundary = Q1 - 1.5 * IQR
     outer_boundary = Q3 + 1.5 * IQR
 
-    # Define outlier indexes
-    indexes = []
-    outliers = []
-    for index in data_frame.index:
-        value = loose_column[index]
-        if value < under_boundary or value > outer_boundary:
-            indexes.append(index)
-            outliers.append(value)
+    # Identify the outliers
+    outliers_mask = ((data_frame[column_name] < under_boundary) | (data_frame[column_name] > outer_boundary))
+    outlier_indexes = data_frame[outliers_mask].index.tolist()
+    outlier_values = data_frame[column_name][outliers_mask].tolist()
 
-    if len(indexes) > 0:
-        return {column_name: {"indexes": indexes}, {"outliers": outliers}}
+    return {column_name: {"indexes": outlier_indexes, "outliers": outlier_values}}
