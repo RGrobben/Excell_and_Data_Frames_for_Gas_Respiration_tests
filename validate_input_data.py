@@ -1,3 +1,4 @@
+from datetime import datetime
 
 import pandas as pd
 from openpyxl.styles import PatternFill
@@ -82,6 +83,42 @@ def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.Data
         return column_name, True
 
 
+def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, column_name_date: str,
+                                                   format_date: str = "%Y-%m-%d",
+                                                   start_row_values_table_in_excel: int = 0):
+    """
+        Validate the indexes of a pandas DataFrame for incorrect date values in a specific column.
+
+        Parameters:
+            data_frame (pd.DataFrame): The pandas DataFrame to be validated.
+            column_name_date (str): The name of the column containing date values to be checked.
+            format_date (str, optional): The format of the date values. Defaults to "%Y-%m-%d".
+            start_row_values_table_in_excel (int, optional): The starting row index of the table in Excel. Defaults to 0.
+
+        Returns:
+            tuple: A tuple containing the column name and either the list of invalid row indexes or True if all rows are valid.
+        """
+    def check_is_string_date(string, date_format):
+        try:
+            datetime.strptime(string, date_format)
+            return True
+        except ValueError:
+            return False
+
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name_date].astype(str)
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+
+        if pd.isnull(value) or check_is_string_date(string=value, date_format=format_date) is False:
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name_date, invalid_rows
+    else:
+        return column_name_date, True
+
+
 def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
                                          header_row: int,
                                          color: str, fill_type: str,
@@ -130,6 +167,7 @@ class validate_if_all_cells_are_correctly_filled:
         self.list_no_correct_strings_and_parallel = []
 
         self.dict_indexes_as_pandas_no_weight_when_flush = None
+        self.dict_indexes_as_pandas_incorrect_date = None
 
     def fill_dict_indexes_as_panda_indexes_no_int_or_float(self, list_column_names_to_be_checked: [str],
                                                            show_process: bool = False) -> {}:
@@ -301,8 +339,15 @@ class validate_if_all_cells_are_correctly_filled:
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
 
-    def date(self):
-        pass
+    def fill_dict_indexes_as_pandas_incorrect_date(self, column_name_date: str,
+                                                   ):
+        dict_indexes_as_pandas_incorrect_date = {}
+        for sheet_name in self.sheet_names:
+            dict_indexes_as_pandas_incorrect_date[sheet_name] = {}
+            data_frame = self.dict_data_frames[sheet_name]
+
+            pass
+
 
     def time(self):
         pass
@@ -310,7 +355,7 @@ class validate_if_all_cells_are_correctly_filled:
     def fill_no_correct_date_time(self):
         pass
 
-    def are_the_constants_filled(self):
+    def the_are_constants_filled(self):
         pass
 
     def fil_missing_constants(self):
