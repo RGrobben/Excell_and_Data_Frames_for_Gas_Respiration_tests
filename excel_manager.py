@@ -9,7 +9,7 @@ from openpyxl.reader.excel import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.workbook import Workbook
 
-from data_classes import Constants_Sample
+from data_classes import ConstantsSample
 
 
 class ExcelManager:
@@ -247,7 +247,7 @@ class ExcelManager:
         constants_dict = {row[0]: row[1] for row in data}
 
         # Instantiate the data class
-        data_class_instance = Constants_Sample
+        data_class_instance = ConstantsSample
 
         # Assign the constants to the data class fields
         for field in dataclasses.fields(data_class_instance):
@@ -342,7 +342,7 @@ class ExcelManager:
         return self.dict_constants_data_frames
 
     def fill_dict_constants_data_classes(self,
-                                         data_class: Constants_Sample,
+                                         data_class: ConstantsSample,
                                          sheets: list[str],
                                          print_process: False | True = False,
                                          ) -> None:
@@ -354,7 +354,7 @@ class ExcelManager:
             if print_process is not False:
                 print(f'Show process: {sheet_name} is done')
 
-    def get_dict_constants_data_classes(self) -> {str, pd.DataFrame}:
+    def get_dict_constants_data_classes(self) -> {str, ConstantsSample}:
         return self.dict_constants_data_classes
 
     def create_new_workbook(self, data_only: bool = False, **kwargs) -> Workbook:

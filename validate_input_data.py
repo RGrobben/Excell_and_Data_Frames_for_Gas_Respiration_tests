@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 from openpyxl.styles import PatternFill
 
+from data_classes import ConstantsSample
 from nice_functions import NiceExcelFunction
 
 
@@ -211,13 +212,14 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
 
 
 class validate_if_all_cells_are_correctly_filled:
-    def __init__(self, dict_data_frames: {str, pd.DataFrame}):
+    def __init__(self, dict_data_frames: {str, pd.DataFrame}, dict_constants_data_classes: {str, ConstantsSample}):
         """
 
         :type dict_data_frames: {sheet name of sample, pd.DataFrame}
         """
         self.dict_data_frames = dict_data_frames
         self.sheet_names = self.dict_data_frames.keys()
+        self.dict_constants_data_classes = dict_constants_data_classes
 
         self.dict_indexes_as_panda_indexes_no_int_or_float = None
 
@@ -459,9 +461,7 @@ class validate_if_all_cells_are_correctly_filled:
                                                  start_row_values_table_in_excel=start_row_values_table_in_excel,
                                                  show_process=show_process)
 
-
-
-    def the_are_constants_filled(self):
+    def the_area_of_constants_is_filled(self):
         pass
 
     def fil_missing_constants(self):
