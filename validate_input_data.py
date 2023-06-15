@@ -101,9 +101,9 @@ def check_is_string_date(string: str, date_format) -> bool:
         return False
 
 
-def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, column_name_date: str,
-                                                   format_date: str = "%Y-%m-%d",
-                                                   start_row_values_table_in_excel: int = 0) -> tuple:
+def validate_if_in_cell_is_correct_date_or_not_filled(data_frame: pd.DataFrame, column_name_date: str,
+                                                      format_date: str = "%Y-%m-%d",
+                                                      start_row_values_table_in_excel: int = 0) -> tuple:
     """
         Validate the indexes of a pandas DataFrame for incorrect date values in a specific column.
 
@@ -149,9 +149,9 @@ def check_is_string_time(string: str, time_format) -> bool:
         return False
 
 
-def validate_dict_indexes_as_pandas_incorrect_time(data_frame: pd.DataFrame, column_name_time: str,
-                                                   format_time: str = "%H:%M:%S",
-                                                   start_row_values_table_in_excel: int = 0) -> tuple:
+def validate_if_in_cell_is_correct_time_or_not_filled(data_frame: pd.DataFrame, column_name_time: str,
+                                                      format_time: str = "%H:%M:%S",
+                                                      start_row_values_table_in_excel: int = 0) -> tuple:
     """
     Valideer de indexen van een pandas DataFrame op onjuiste tijdwaarden in een specifieke kolom.
 
@@ -399,14 +399,27 @@ class validate_if_all_cells_are_correctly_filled:
                                              start_row_values_table_in_excel=start_row_values_table_in_excel,
                                              show_process=show_process)
 
-    def fill_dict_indexes_as_pandas_incorrect_date(self, column_name_date: str,
-                                                   ):
+    def fill_dict_indexes_as_pandas_incorrect_date(self, column_name_date: str, format_date: str = "%Y-%m-%d",
+                                                   show_process: bool = False) -> {}:
+
         dict_indexes_as_pandas_incorrect_date = {}
         for sheet_name in self.sheet_names:
             dict_indexes_as_pandas_incorrect_date[sheet_name] = {}
             data_frame = self.dict_data_frames[sheet_name]
 
-            pass
+            indexes = validate_if_in_cell_is_correct_date_or_not_filled(data_frame=data_frame,
+                                                                        column_name_date=column_name_date,
+                                                                        format_date=format_date)
+            if indexes[1] is not True:
+                dict_indexes_as_pandas_incorrect_date[sheet_name][column_name_date] = indexes[1]
+
+            if show_process:
+                print(f"{sheet_name}  with column {column_name_date} is done")
+
+        self.dict_indexes_as_pandas_incorrect_date = dict_indexes_as_pandas_incorrect_date
+
+        return dict_indexes_as_pandas_incorrect_date
+
 
     def time(self):
         pass
