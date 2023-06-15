@@ -13,7 +13,6 @@ class ConstantsSample:
     molar_mass_carbon: float = 12
     henryeff_20: float = 5.23 ** -3
 
-    @property
     def check_all_checks(self):
         checks = [
             self.check_Rgas,
