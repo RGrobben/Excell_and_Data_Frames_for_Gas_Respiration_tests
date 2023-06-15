@@ -83,6 +83,24 @@ def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.Data
         return column_name, True
 
 
+def check_is_string_date(string: str, date_format):
+    """
+    Check if a string can be parsed as a valid date using the given format.
+
+    Parameters:
+        string (str): The string to be checked for date validity.
+        date_format (str): The format of the date values. For example: "%Y-%m-%d"
+
+    Returns:
+        bool: True if the string is a valid date, False otherwise.
+    """
+    try:
+        datetime.strptime(string, date_format)
+        return True
+    except ValueError:
+        return False
+
+
 def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, column_name_date: str,
                                                    format_date: str = "%Y-%m-%d",
                                                    start_row_values_table_in_excel: int = 0):
@@ -98,12 +116,6 @@ def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, col
         Returns:
             tuple: A tuple containing the column name and either the list of invalid row indexes or True if all rows are valid.
         """
-    def check_is_string_date(string, date_format):
-        try:
-            datetime.strptime(string, date_format)
-            return True
-        except ValueError:
-            return False
 
     invalid_rows = []
     column_in_data_frame_to_be_checked = data_frame[column_name_date].astype(str)
@@ -117,6 +129,54 @@ def validate_dict_indexes_as_pandas_incorrect_date(data_frame: pd.DataFrame, col
         return column_name_date, invalid_rows
     else:
         return column_name_date, True
+
+
+def check_is_string_time(string: str, time_format):
+    """
+    Check if a string can be parsed as a valid time using the given format.
+
+    Parameters:
+        string (str): The string to be checked for time validity.
+        time_format (str): The format of the time values. For example: "%H:%M:%S"
+
+    Returns:
+        bool: True if the string is a valid time, False otherwise.
+    """
+    try:
+        datetime.strptime(string, time_format)
+        return True
+    except ValueError:
+        return False
+
+
+def validate_dict_indexes_as_pandas_incorrect_time(data_frame: pd.DataFrame, column_name_time: str,
+                                                   format_time: str = "%H:%M:%S",
+                                                   start_row_values_table_in_excel: int = 0):
+    """
+    Valideer de indexen van een pandas DataFrame op onjuiste tijdwaarden in een specifieke kolom.
+
+    Parameters:
+        data_frame (pd.DataFrame): De pandas DataFrame die moet worden gevalideerd.
+        column_name_time (str): De naam van de kolom met tijdwaarden die gecontroleerd moeten worden.
+        format_time (str, optioneel): Het formaat van de tijdwaarden. Standaard is "%H:%M:%S".
+        start_row_values_table_in_excel (int, optioneel): De startindex van de tabel in Excel. Standaard is 0.
+
+    Returns:
+        tuple: Een tuple met de kolomnaam en ofwel de lijst met ongeldige rij-indexen of True als alle rijen geldig zijn.
+    """
+
+    invalid_rows = []
+    column_in_data_frame_to_be_checked = data_frame[column_name_time].astype(str)
+    for index in column_in_data_frame_to_be_checked.index:
+        value = column_in_data_frame_to_be_checked[index]
+
+        if pd.isnull(value) or check_is_string_time(string=value, time_format=format_time) is False:
+            invalid_rows.append(index + start_row_values_table_in_excel)
+
+    if len(invalid_rows) > 0:
+        return column_name_time, invalid_rows
+    else:
+        return column_name_time, True
 
 
 def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_indexes: {},
@@ -347,7 +407,6 @@ class validate_if_all_cells_are_correctly_filled:
             data_frame = self.dict_data_frames[sheet_name]
 
             pass
-
 
     def time(self):
         pass
