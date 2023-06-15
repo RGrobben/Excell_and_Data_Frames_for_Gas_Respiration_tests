@@ -19,6 +19,7 @@ def validate_if_there_is_a_float_or_integer_in_cell(data_frame: pd.DataFrame, co
     else:
         return column_name, True
 
+
 def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.DataFrame, column_name: str,
                                                               specific_float_or_integer: float | int,
                                                               start_row_values_table_in_excel: int = 0) -> tuple:
@@ -33,7 +34,6 @@ def validate_if_there_is_no_specific_float_or_integer_in_cell(data_frame: pd.Dat
         return column_name, invalid_rows
     else:
         return column_name, True
-
 
 
 def validate_if_there_is_a_string(data_frame: pd.DataFrame, column_name: str,
@@ -73,7 +73,7 @@ def validate_if_there_is_in_cell_one_of_the_specific_strings(data_frame: pd.Data
     column_in_data_frame_to_be_checked = data_frame[column_name]
     for index in column_in_data_frame_to_be_checked.index:
         value = column_in_data_frame_to_be_checked[index]
-        if pd.isnull(value) and value not in list_specific_string:
+        if pd.isnull(value) or value not in list_specific_string:
             invalid_rows.append(index + start_row_values_table_in_excel)
 
     if len(invalid_rows) > 0:
