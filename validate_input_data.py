@@ -442,12 +442,12 @@ class validate_if_all_cells_are_correctly_filled:
 
         return dict_indexes_as_pandas_incorrect_time
 
-    def fill_wrong_cells_no_correct_date_time(self,
-                                              workbook, header_row: int,
-                                              start_row_values_table_in_excel: int,
-                                              color: str = "FF6666",
-                                              fill_type: str = "solid",
-                                              show_process: bool = False):
+    def fill_wrong_cells_no_correct_date_and_time(self,
+                                                  workbook, header_row: int,
+                                                  start_row_values_table_in_excel: int,
+                                                  color: str = "FF6666",
+                                                  fill_type: str = "solid",
+                                                  show_process: bool = False):
 
         # "FF6666" is the color code for light red
         for dictionary in self.dict_indexes_as_pandas_incorrect_time, self.dict_indexes_as_pandas_incorrect_date:
