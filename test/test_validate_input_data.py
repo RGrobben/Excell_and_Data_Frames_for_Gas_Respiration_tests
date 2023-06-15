@@ -1,9 +1,8 @@
 import unittest
 
-import numpy as np
 import pandas as pd
 
-from validate_input_data import validate_if_there_is_a_float_or_integer_in_cell, \
+from Validation.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
     validate_if_there_is_a_specific_string
 
 
