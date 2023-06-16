@@ -200,8 +200,6 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
 
     for sheet_name, sheet_data in dict_sheet_name_column_names_indexes.items():
         sheet = workbook[sheet_name]
-        if show_process is True:
-            print(f"started with {sheet_name}")
         for column_name, indexes in sheet_data.items():
             column_letter = NiceExcelFunction.find_column_name_excel_index_based_on_column_name_string_in_given_row(
                 workbook=workbook, sheet_name=sheet_name, search_string=column_name, header_row=header_row)
@@ -209,6 +207,9 @@ def style_color_cells_with_given_indexes(workbook, dict_sheet_name_column_names_
                 index_row_in_excel = start_row_values_table_in_excel + index
                 column_and_row_excel_combination = column_letter + str(index_row_in_excel)
                 sheet[column_and_row_excel_combination].fill = color_fill
+
+        if show_process is True:
+            print(f"Finished with coloring {sheet_name}")
 
 
 def style_color_cells_with_given_excel_indexes_and_excel_column_name(workbook, dict_sheet_name_indexes: {},

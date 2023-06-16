@@ -336,8 +336,8 @@ class ValidateInputDataStatistics:
                 if len(indexes) > 0:
                     dict_outliers_indexes_as_pandas[sheet_name][column_name] = indexes
 
-                if show_process:
-                    print(f"{sheet_name}  with column {column_name} is done")
+            if show_process:
+                print(f"dict outliers for sheet {sheet_name} is filled")
 
         self.dict_outliers_indexes_as_pandas = dict_outliers_indexes_as_pandas
 
