@@ -137,6 +137,9 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                          name_column_CO2=name_column_mCO2_a,
                                                          name_column_CH4=name_column_mCH4_a)
 
+        DataFrameProcessor.replace_position_column(data_frame=self.data_frame, name_replaced_column=name_column_mg_as,
+                                                   name_column_of_position=name_column_mCO2_a)
+
     def run_moles_produced(self,
                            name_column_mCTot_produced: str = "mCTot_produced",
                            name_column_mCTot_b: str = "mCTot_b",
@@ -211,37 +214,71 @@ class RunDataFrameCalculationsForOneDataFrame:
                                     name_column_PP_CO2_bs: str = "PP CO2_b ",
                                     column_name_pressure_before_sampling: str = "P sample before gc [hPa]",
                                     column_name_corrected_carbon_dioxide_in_percentage: str = "CO2-corr [%]",
-                                    name_column_CO2_aq_mol_per_m3: str = "CO2_aq [mol/m3]",
-                                    name_column_CO2_aq_mol: str = "CO2_aq [mol]",
-                                    name_column_CO2_produced_aq: str = "CO2_produced_aq",
+                                    name_column_CO2_before_aq_mol_per_m3: str = "CO2_b_aq [mol/m3]",
+                                    name_column_CO2_before_aq_mol: str = "CO2_b_aq [mol]",
+                                    name_column_PP_CO2_as: str = "PP CO2_a ",
+                                    column_name_pressure_after_sampling: str = "P sample before gc [hPa]",
+                                    name_column_CO2_after_aq_mol_per_m3: str = "CO2_a_aq [mol/m3]",
+                                    name_column_CO2_after_aq_mol: str = "CO2_a_aq [mol]",
+                                    name_column_CO2_dissolved_between_time_steps_aq: str =
+                                    "CO2_dissolved_between_time_steps_aq",
+                                    name_column_CO2_produced_aq_cum: str = "CO2_produced_aq_cum",
                                     name_column_DIC_cum: str = "DIC_cum",
                                     ):
+        # before sampling
         CarbonInAqueousPhase.partial_pressure_carbon_dioxide(
             data_frame=self.data_frame,
             name_column=name_column_PP_CO2_bs,
-            column_name_pressure_before_sampling=column_name_pressure_before_sampling,
+            column_name_pressure_sampling=column_name_pressure_before_sampling,
             column_name_corrected_carbon_dioxide_in_percentage=column_name_corrected_carbon_dioxide_in_percentage
         )
         CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol_per_m3(
             data_frame=self.data_frame,
-            name_column=name_column_CO2_aq_mol_per_m3,
-            column_name_PP_CO2_bs=name_column_PP_CO2_bs
+            name_column=name_column_CO2_before_aq_mol_per_m3,
+            column_name_PP_CO2=name_column_PP_CO2_bs
         )
         CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol(
             data_frame=self.data_frame,
-            name_column=name_column_CO2_aq_mol,
-            column_name_CO2_aq_in_mol_per_m3=name_column_CO2_aq_mol_per_m3,
+            name_column=name_column_CO2_before_aq_mol,
+            column_name_CO2_aq_in_mol_per_m3=name_column_CO2_before_aq_mol_per_m3,
             water_volume_in_liters=water_volume_in_liters
         )
+
+        # after sampling
+        CarbonInAqueousPhase.partial_pressure_carbon_dioxide(
+            data_frame=self.data_frame,
+            name_column=name_column_PP_CO2_as,
+            column_name_pressure_sampling=column_name_pressure_after_sampling,
+            column_name_corrected_carbon_dioxide_in_percentage=column_name_corrected_carbon_dioxide_in_percentage)
+
+        CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol_per_m3(data_frame=self.data_frame,
+                                                                        name_column=name_column_CO2_after_aq_mol_per_m3,
+                                                                        column_name_PP_CO2=name_column_PP_CO2_as)
+
+        CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol(data_frame=self.data_frame,
+                                                                 name_column=name_column_CO2_after_aq_mol,
+                                                                 column_name_CO2_aq_in_mol_per_m3=
+                                                                 name_column_CO2_after_aq_mol_per_m3,
+                                                                 water_volume_in_liters=water_volume_in_liters)
+
+        # CO2 dissolved between times steps aqueous
+        CarbonInAqueousPhase.carbon_dioxide_dissolved_between_time_steps_aqueous(
+            data_frame=self.data_frame,
+            name_column=name_column_CO2_dissolved_between_time_steps_aq,
+            column_name_CO2_before_aq_in_mol=name_column_CO2_before_aq_mol,
+            column_name_CO2_after_aq_in_mol=name_column_CO2_after_aq_mol
+        )
+
+        # other
         CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase_cumulative(
             data_frame=self.data_frame,
-            name_column=name_column_CO2_produced_aq,
-            column_name_CO2_aq_in_mol=name_column_CO2_aq_mol,
+            name_column=name_column_CO2_produced_aq_cum,
+            carbon_dioxide_dissolved_between_time_steps_aqueous=name_column_CO2_dissolved_between_time_steps_aq,
         )
         CarbonInAqueousPhase.dissolved_inorganic_carbon_cumulative(
             data_frame=self.data_frame,
             name_column=name_column_DIC_cum,
-            column_name_CO2_aq_in_mol_per_m3=name_column_CO2_aq_mol_per_m3,
+            column_name_CO2_aq_in_mol_per_m3=name_column_CO2_before_aq_mol_per_m3,
             dry_mass_sample=dry_mass_sample,
             water_volume_in_liters=water_volume_in_liters,
         )
@@ -254,7 +291,8 @@ class RunDataFrameCalculationsForOneDataFrame:
                                     name_column_DIC_cum: str = "DIC_cum",
                                     name_column_oxygen_consumed: str = "O2 consumed",
                                     name_column_C_dioxide_produced: str = "CO2 produced",
-                                    name_column_CO2_produced_aq: str = "CO2_produced_aq",
+                                    name_column_CO2_dissolved_between_time_steps_aq: str =
+                                    "CO2_dissolved_between_time_steps_aq",
                                     ):
         ResultsInterpretations.total_carbon_dry_matter(
             data_frame=self.data_frame,
@@ -270,6 +308,6 @@ class RunDataFrameCalculationsForOneDataFrame:
             name_column=name_column_ratio_O2_CO2,
             name_column_O2_consumed_mol=name_column_oxygen_consumed,
             name_column_CO2_produced_gas_mol=name_column_C_dioxide_produced,
-            name_column_CO2_produced_aqueous_mol=name_column_CO2_produced_aq,
+            carbon_dioxide_dissolved_between_time_steps_aqueous=name_column_CO2_dissolved_between_time_steps_aq,
             name_column_flush=name_column_flush
         )

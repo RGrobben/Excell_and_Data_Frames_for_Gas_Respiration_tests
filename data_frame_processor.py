@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import Any
 
+
 class DataFrameProcessor:
     """
     A class for processing pandas DataFrames standard calculations.
@@ -21,7 +22,6 @@ class DataFrameProcessor:
     def add_day_column(data_frame: pd.DataFrame, date_column_name: str,
                        time_column_name: str, day_plus_time_column_name: str = "Day + Time",
                        day_column_name: str = "Day", dayfirst: bool = False) -> None:
-
         data_frame[date_column_name] = data_frame[date_column_name].astype(str)
         data_frame[time_column_name] = data_frame[time_column_name].astype(str)
 

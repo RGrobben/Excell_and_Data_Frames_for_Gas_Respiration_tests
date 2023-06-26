@@ -294,19 +294,16 @@ class CarbonInAqueousPhase:
     def carbon_dioxide_dissolved_between_time_steps_aqueous(data_frame: pd.DataFrame, name_column: str,
                                                             column_name_CO2_before_aq_in_mol: str,
                                                             column_name_CO2_after_aq_in_mol: str):
-        data_frame[name_column] = (data_frame[column_name_CO2_before_aq_in_mol] -
-                                   data_frame[column_name_CO2_after_aq_in_mol].shift(1))
+        data_frame[name_column] = data_frame[column_name_CO2_before_aq_in_mol] - \
+                                      data_frame[column_name_CO2_after_aq_in_mol].shift(1)
 
-        data_frame[name_column].at[0] = data_frame[column_name_CO2_before_aq_in_mol].at[0] - \
-                                        data_frame[column_name_CO2_after_aq_in_mol].at[0]
+        data_frame.loc[0, name_column] = data_frame[column_name_CO2_before_aq_in_mol].at[0] - \
+                                         data_frame[column_name_CO2_after_aq_in_mol].at[0]
 
     @staticmethod
     def carbon_dioxide_produced_aqueous_phase_cumulative(data_frame: pd.DataFrame, name_column: str,
-                                                         column_name_CO2_aq_in_mol: str,
-                                                         first_row_value: float = 0) -> None:
-        data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol] - data_frame[column_name_CO2_aq_in_mol].shift(1)
-
-        data_frame[name_column].at[0] = first_row_value
+                                                         carbon_dioxide_dissolved_between_time_steps_aqueous: str) -> None:
+        data_frame[name_column] = data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous].cumsum()
 
     @staticmethod
     def dissolved_inorganic_carbon_cumulative(data_frame: pd.DataFrame, name_column: str,
@@ -320,12 +317,8 @@ class CarbonInAqueousPhase:
         :type molar_mass_carbon: molar mass of carbon. is constant and set to 12 g/mol
         """
         constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
-        data_frame[name_column] = np.nan
-        # set the first value
-        data_frame[name_column].at[0] = data_frame[column_name_CO2_aq_in_mol_per_m3].at[0] * constant
 
-        data_frame.loc[1:, name_column] = (data_frame.loc[1:, column_name_CO2_aq_in_mol_per_m3] * constant) - \
-                                          data_frame.loc[0, name_column]
+        data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant)
 
 
 class ResultsInterpretations:
@@ -347,11 +340,11 @@ class ResultsInterpretations:
     def ratio_oxygen_consumed_carbon_dioxide_produced(data_frame: pd.DataFrame, name_column: str,
                                                       name_column_O2_consumed_mol: str,
                                                       name_column_CO2_produced_gas_mol: str,
-                                                      name_column_CO2_produced_aqueous_mol: str,
+                                                      carbon_dioxide_dissolved_between_time_steps_aqueous: str,
                                                       name_column_flush: str, first_row_value: float = 0
                                                       ):
         data_frame[name_column] = data_frame[name_column_O2_consumed_mol] / (
-                data_frame[name_column_CO2_produced_gas_mol] + data_frame[name_column_CO2_produced_aqueous_mol])
+                data_frame[name_column_CO2_produced_gas_mol] + data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous])
 
         data_frame[name_column].at[0] = first_row_value
         mask = (data_frame[name_column_flush] == 1)
