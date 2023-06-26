@@ -5,11 +5,11 @@ from validation_input_data.general_validation_functions import validate_if_there
 
 @dataclass
 class ConstantsSample:
-    Rgas: float
-    expTemp: float
-    volume_headspace: float
-    water_volume: float
-    dry_mass_sample: float
+    Rgas: float = None
+    expTemp: float = None
+    volume_headspace: float = None
+    water_volume: float = None
+    dry_mass_sample: float = None
     molar_mass_carbon: float = 12
     henryeff_20: float = 5.23 ** -3
 

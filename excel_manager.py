@@ -224,7 +224,7 @@ class ExcelManager:
             end_row: int = None,
             values_only: bool = True,
             data_only: bool = False
-    ):
+    ) -> ConstantsSample:
         if data_only:
             workbook = self.workbook_values
         else:

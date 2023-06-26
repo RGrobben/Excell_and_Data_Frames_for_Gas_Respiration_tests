@@ -262,27 +262,27 @@ class CumulativeProductionGasPhase:
 class CarbonInAqueousPhase:
     @staticmethod
     def partial_pressure_carbon_dioxide(data_frame: pd.DataFrame, name_column,
-                                        column_name_pressure_before_sampling: str,
+                                        column_name_pressure_sampling: str,
                                         column_name_corrected_carbon_dioxide_in_percentage: str
                                         ) -> None:
-        data_frame[name_column] = data_frame[column_name_pressure_before_sampling] * 100 * \
+        data_frame[name_column] = data_frame[column_name_pressure_sampling] * 100 * \
                                   data_frame[column_name_corrected_carbon_dioxide_in_percentage] / 100
 
     @staticmethod
     def carbon_dioxide_in_aqueous_phase_mol_per_m3(data_frame: pd.DataFrame, name_column: str,
-                                                   column_name_PP_CO2_bs: str,
+                                                   column_name_PP_CO2: str,
                                                    henry_law_constant: float = (5.23 * 10 ** -3)) -> None:
         """
         :param data_frame: pd.DataFrame
         :param name_column: column name for the new created column for the calculation/
-        :param column_name_PP_CO2_bs: The column name partial pressure carbon dioxide before sampling.
+        :param column_name_PP_CO2: The column name partial pressure carbon dioxide  sampling.
         :param henry_law_constant: constant of the Henry law for CO2. Default at 20 degrees.
 
         Return:
         carbon dioxide in aqueous phase [mol/m3] in a new column in the data frame pandas
 
         """
-        data_frame[name_column] = data_frame[column_name_PP_CO2_bs] * henry_law_constant
+        data_frame[name_column] = data_frame[column_name_PP_CO2] * henry_law_constant
 
     @staticmethod
     def carbon_dioxide_in_aqueous_phase_mol(data_frame: pd.DataFrame, name_column: str,

@@ -249,7 +249,7 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         CarbonInAqueousPhase.partial_pressure_carbon_dioxide(
             data_frame=df,
             name_column=name_column,
-            column_name_pressure_before_sampling=column_name_pressure_before_sampling,
+            column_name_pressure_sampling=column_name_pressure_before_sampling,
             column_name_corrected_carbon_dioxide_in_percentage=column_name_corrected_carbon_dioxide_in_percentage
         )
 
@@ -273,7 +273,7 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         CarbonInAqueousPhase.carbon_dioxide_in_aqueous_phase_mol_per_m3(
             data_frame=df,
             name_column=name_column,
-            column_name_PP_CO2_bs=column_name_pp_co2_bs
+            column_name_PP_CO2=column_name_pp_co2_bs
         )
         expected_values_co2_aq_mol_per_m3 = [1.753263360000000E-01,
                                              7.643605970149250E+00,
