@@ -180,7 +180,7 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                    name_column_C_total_produced_cumulative: str = "mCTot_produced_cum",
                                                    name_column_C_total_produced: str = "mCTot_produced",
                                                    name_column_flush: str = "Flush (1=yes; 0=no)",
-                                                   name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum ",
+                                                   name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum",
                                                    name_column_mCTot_produced_cumulative: str = "mCTot_produced_cum"
                                                    ):
         # oxygen cumulative consumed
@@ -287,7 +287,7 @@ class RunDataFrameCalculationsForOneDataFrame:
                                     name_column_Ctot_DM: str = "Ctot_DM [mg C/gDW]",
                                     name_column_ratio_O2_CO2: str = "Ratio O2/CO2",
                                     name_column_flush: str = "Flush (1=yes; 0=no)",
-                                    name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum ",
+                                    name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum",
                                     name_column_DIC_cum: str = "DIC_cum",
                                     name_column_oxygen_consumed: str = "O2 consumed",
                                     name_column_C_dioxide_produced: str = "CO2 produced",
