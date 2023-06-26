@@ -216,7 +216,7 @@ class RunDataFrameCalculationsForOneDataFrame:
                                     name_column_CO2_produced_aq: str = "CO2_produced_aq",
                                     name_column_DIC_cum: str = "DIC_cum",
                                     ):
-        CarbonInAqueousPhase.partial_pressure_carbon_dioxide_before_sampling(
+        CarbonInAqueousPhase.partial_pressure_carbon_dioxide(
             data_frame=self.data_frame,
             name_column=name_column_PP_CO2_bs,
             column_name_pressure_before_sampling=column_name_pressure_before_sampling,
@@ -233,7 +233,7 @@ class RunDataFrameCalculationsForOneDataFrame:
             column_name_CO2_aq_in_mol_per_m3=name_column_CO2_aq_mol_per_m3,
             water_volume_in_liters=water_volume_in_liters
         )
-        CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase(
+        CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase_cumulative(
             data_frame=self.data_frame,
             name_column=name_column_CO2_produced_aq,
             column_name_CO2_aq_in_mol=name_column_CO2_aq_mol,

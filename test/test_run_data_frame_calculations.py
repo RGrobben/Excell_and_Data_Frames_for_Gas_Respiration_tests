@@ -246,7 +246,7 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         }
         df = pd.DataFrame(data)
 
-        CarbonInAqueousPhase.partial_pressure_carbon_dioxide_before_sampling(
+        CarbonInAqueousPhase.partial_pressure_carbon_dioxide(
             data_frame=df,
             name_column=name_column,
             column_name_pressure_before_sampling=column_name_pressure_before_sampling,
@@ -327,7 +327,7 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
                                             ]}
         df = pd.DataFrame(data)
 
-        CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase(
+        CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase_cumulative(
             data_frame=df,
             name_column=name_column,
             column_name_CO2_aq_in_mol=column_name_co2_aq_in_mol
@@ -347,11 +347,11 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         name_column = "DIC_cum"
         column_name_co2_aq_in_mol_per_m3 = "CO2_aq [mol/m3]"
 
-        data = {column_name_co2_aq_in_mol_per_m3: [1.753263360000000 * 10**-1,
+        data = {column_name_co2_aq_in_mol_per_m3: [1.753263360000000 * 10 ** -1,
                                                    7.643605970149250,
-                                                   1.173020355933840 * 10**1,
+                                                   1.173020355933840 * 10 ** 1,
                                                    4.388689990760700,
-                                                   1.310216489669820 * 10**1,
+                                                   1.310216489669820 * 10 ** 1,
                                                    ]}
         df = pd.DataFrame(data)
 
@@ -363,16 +363,42 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
             water_volume_in_liters=0.098
         )
 
-        expected_values_dic_cum = [1.342274225973880 * 10**-3,
-                                   5.717611794091300 * 10**-2,
-                                   8.846254496061420 * 10**-2,
-                                   3.225693051864370 * 10**-2,
-                                   9.896609157080900 * 10**-2,
+        expected_values_dic_cum = [1.342274225973880 * 10 ** -3,
+                                   5.717611794091300 * 10 ** -2,
+                                   8.846254496061420 * 10 ** -2,
+                                   3.225693051864370 * 10 ** -2,
+                                   9.896609157080900 * 10 ** -2,
                                    ]
 
         for i in range(5):
-            self.assertAlmostEqual(data[column_name_co2_aq_in_mol_per_m3][i], df[column_name_co2_aq_in_mol_per_m3][i], places=5)
+            self.assertAlmostEqual(data[column_name_co2_aq_in_mol_per_m3][i], df[column_name_co2_aq_in_mol_per_m3][i],
+                                   places=5)
             self.assertAlmostEqual(expected_values_dic_cum[i], df[name_column][i], places=3)
+
+    def test_carbon_dioxide_dissolved_between_time_steps_aqueous(self):
+        column_name = "difference"
+        column_name_CO2_before_aq_in_mol = "CO_2 before",
+        column_name_CO2_after_aq_in_mol = "CO2_after"
+
+        # Prepare a data frame for testing
+        df = pd.DataFrame({
+            column_name_CO2_before_aq_in_mol: [10, 20, 30, 40, 53],
+            column_name_CO2_after_aq_in_mol: [5, 15, 20, 35, 44]
+        })
+
+        expected_output = pd.Series([5, 15, 15, 20, 18])
+        # Run the method to be tested
+        CarbonInAqueousPhase.carbon_dioxide_dissolved_between_time_steps_aqueous(data_frame=df,
+                                                                                 name_column=column_name,
+                                                                                 column_name_CO2_before_aq_in_mol=
+                                                                                 column_name_CO2_before_aq_in_mol,
+                                                                                 column_name_CO2_after_aq_in_mol=
+                                                                                 column_name_CO2_after_aq_in_mol)
+
+        # Check if the results are as expected
+        for i in range(5):
+            print(expected_output[i], df[column_name][i])
+            self.assertAlmostEqual(expected_output[i], df[column_name][i], places=5)
 
 
 class TestResultsInterpretations(unittest.TestCase):
@@ -421,7 +447,7 @@ class TestResultsInterpretations(unittest.TestCase):
         name_column_co2_produced_aqueous_mol = "CO2_aq produced mol",
         name_column_flush = "flush"
 
-        data = {name_column_o2_consumed_mol: [0.00E+00,  0.008816302,  0.000247261,  np.nan,  0.005625266],
+        data = {name_column_o2_consumed_mol: [0.00E+00, 0.008816302, 0.000247261, np.nan, 0.005625266],
                 name_column_co2_produced_gas_mol: [0.00E+00, 0.00056301, 0.000309216, np.nan, 0.000662512],
                 name_column_co2_produced_aqueous_mol: [0.00000000000000000E+00,
                                                        7.31891404146627000E-04,
@@ -450,6 +476,3 @@ class TestResultsInterpretations(unittest.TestCase):
 
         for i in range(5):
             self.assertAlmostEqual(expected_values_ratio[i], df[name_column][i], places=3)
-
-
-

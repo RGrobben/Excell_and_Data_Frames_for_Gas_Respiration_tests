@@ -261,10 +261,10 @@ class CumulativeProductionGasPhase:
 
 class CarbonInAqueousPhase:
     @staticmethod
-    def partial_pressure_carbon_dioxide_before_sampling(data_frame: pd.DataFrame, name_column,
-                                                        column_name_pressure_before_sampling: str,
-                                                        column_name_corrected_carbon_dioxide_in_percentage: str
-                                                        ) -> None:
+    def partial_pressure_carbon_dioxide(data_frame: pd.DataFrame, name_column,
+                                        column_name_pressure_before_sampling: str,
+                                        column_name_corrected_carbon_dioxide_in_percentage: str
+                                        ) -> None:
         data_frame[name_column] = data_frame[column_name_pressure_before_sampling] * 100 * \
                                   data_frame[column_name_corrected_carbon_dioxide_in_percentage] / 100
 
@@ -291,9 +291,19 @@ class CarbonInAqueousPhase:
         data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol_per_m3] * (water_volume_in_liters / 1000)
 
     @staticmethod
-    def carbon_dioxide_produced_aqueous_phase(data_frame: pd.DataFrame, name_column: str,
-                                              column_name_CO2_aq_in_mol: str,
-                                              first_row_value: float = 0) -> None:
+    def carbon_dioxide_dissolved_between_time_steps_aqueous(data_frame: pd.DataFrame, name_column: str,
+                                                            column_name_CO2_before_aq_in_mol: str,
+                                                            column_name_CO2_after_aq_in_mol: str):
+        data_frame[name_column] = (data_frame[column_name_CO2_before_aq_in_mol] -
+                                   data_frame[column_name_CO2_after_aq_in_mol].shift(1))
+
+        data_frame[name_column].at[0] = data_frame[column_name_CO2_before_aq_in_mol].at[0] - \
+                                        data_frame[column_name_CO2_after_aq_in_mol].at[0]
+
+    @staticmethod
+    def carbon_dioxide_produced_aqueous_phase_cumulative(data_frame: pd.DataFrame, name_column: str,
+                                                         column_name_CO2_aq_in_mol: str,
+                                                         first_row_value: float = 0) -> None:
         data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol] - data_frame[column_name_CO2_aq_in_mol].shift(1)
 
         data_frame[name_column].at[0] = first_row_value
@@ -327,7 +337,8 @@ class ResultsInterpretations:
         data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
 
-        data_frame.loc[1:, name_column] = data_frame.loc[1:, name_column_C_gas_dry_mass_cum] + data_frame.loc[1:, name_column_DIC_cum]
+        data_frame.loc[1:, name_column] = data_frame.loc[1:, name_column_C_gas_dry_mass_cum] + data_frame.loc[1:,
+                                                                                               name_column_DIC_cum]
 
         mask = (data_frame[name_column_flush] == 1)
         data_frame.loc[mask, name_column] = np.nan
