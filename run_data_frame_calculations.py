@@ -15,17 +15,61 @@ class RunDataFrameCalculationsForOneDataFrame:
     def __init__(self, data_frame):
         self.data_frame = data_frame
 
-    def run_data_frame_processor_calculations(self, fraction_to_time: bool = False):
-        DataFrameProcessor.add_day_column(data_frame=self.data_frame, date_column_name="Date", time_column_name="Time")
+        self.get_name_column_time: str = "Time"
+        self.get_name_column_ch4: str = "CH4 [%]"
+        self.get_name_column_co2: str = "CO2 [%]"
+        self.get_name_column_o2: str = "O2 [%]"
+        self.get_name_column_n2: str = "N2 [%]"
 
-    def run_gas_composition_calculations(self):
-        GasComposition.set_gas_composition(data_frame=self.data_frame, ch4=0, co2=0.03, o2=21.90, n2=78.07, index=0)
-        GasComposition.sum_correct_sum(data_frame=self.data_frame)
+        self.create_column_name_date: str = "Date"
+        self.create_name_column_summation_correction: str = "Sum-corr [%]"
+        self.create_name_correction_ch4: str = "CH4-corr [%]"
+        self.create_name_correction_co2: str = "CO2-corr [%]"
+        self.create_name_correction_o2: str = "O2-corr [%]"
+        self.create_name_correction_n2: str = "N2-corr [%]"
+        self.create_name_column_mg_bs: str = "mg_bs"
+        self.create_name_column_mg_as: str = "mg_as"
+        self.create_name_column_mCO2_b: str = "mCO2_b"
+        self.create_name_column_mCH4_b: str = "mCH4_b"
+        self.create_name_column_mO2_b: str = "mO2_b"
+        self.create_name_column_mN2_b: str = "mN2_b"
+        self.create_name_column_mCO2_a: str = "mCO2_a"
+        self.create_name_column_mCH4_a: str = "mCH4_a"
+        self.create_name_column_mO2_a: str = "mO2_a"
+        self.create_name_column_mN2_a: str = "mN2_a"
+        self.create_name_column_CTot_b: str = "mCTot_b"
+        self.create_name_column_cTot_a: str = "mCTot_a"
 
-    def run_percentage_o2_consumed_and_co2_produced_and_ratio_calculations(self):
-        PercentageO2ConsumedAndCO2ProducedAndRatio.calculate_o2_consumed(data_frame=self.data_frame)
-        PercentageO2ConsumedAndCO2ProducedAndRatio.calculate_co2_produced(data_frame=self.data_frame)
-        PercentageO2ConsumedAndCO2ProducedAndRatio.calculate_ratio_o2_co2(data_frame=self.data_frame)
+    def run_data_frame_processor_calculations(self, dayfirst: bool = False):
+        DataFrameProcessor.add_day_column(data_frame=self.data_frame, date_column_name=self.create_column_name_date,
+                                          time_column_name=self.get_name_column_time, dayfirst=dayfirst)
+
+    def run_gas_composition_calculations(self,
+                                         set_values_gas_composition_first_row: bool = False,
+                                         ch4: float = 0, co2: float = 0, o2: float = 0, n2: float = 0,
+                                         index: int = 0,
+                                         ):
+        # set the values of the first row for the gas composition.
+        if set_values_gas_composition_first_row:
+            GasComposition.set_gas_composition(data_frame=self.data_frame,
+                                               ch4=ch4, co2=co2, o2=o2, n2=n2, index=0,
+                                               name_column_ch4=self.get_name_column_ch4,
+                                               name_column_co2=self.get_name_column_co2,
+                                               name_column_o2=self.get_name_column_o2,
+                                               name_column_n2=self.get_name_column_n2,
+                                               )
+
+        GasComposition.sum_correct_sum(data_frame=self.data_frame,
+                                       name_column_ch4=self.get_name_column_ch4,
+                                       name_column_co2=self.get_name_column_co2,
+                                       name_column_o2=self.get_name_column_o2,
+                                       name_column_n2=self.get_name_column_o2,
+                                       name_column_summation_correction=self.create_name_column_summation_correction,
+                                       name_correction_ch4=self.create_name_correction_ch4,
+                                       name_correction_co2=self.create_name_correction_co2,
+                                       name_correction_o2=self.create_name_correction_o2,
+                                       name_correction_n2=self.create_name_correction_n2
+                                       )
 
     def run_mol_gases_before_and_after_sampling(self,
                                                 Rgas: float,
@@ -54,92 +98,79 @@ class RunDataFrameCalculationsForOneDataFrame:
                                                        name_column=name_column_mg_as
                                                        )
 
-    def run_mol_gas_composition_calculation(self,
-                                            name_column_mg_bs: str = "mg_bs",
-                                            name_column_mg_as: str = "mg_as",
-                                            name_column_mCO2_b: str = "mCO2_b",
-                                            name_column_mCH4_b: str = "mCH4_b",
-                                            name_column_mO2_b: str = "mO2_b",
-                                            name_column_mN2_b: str = "mN2_b",
-                                            name_corr_CO2: str = "CO2-corr [%]",
-                                            name_corr_CH4: str = "CH4-corr [%]",
-                                            name_corr_O2: str = "O2-corr [%]",
-                                            name_corr_N2: str = "N2-corr [%]",
-                                            name_column_mCO2_a: str = "mCO2_a",
-                                            name_column_mCH4_a: str = "mCH4_a",
-                                            name_column_mO2_a: str = "mO2_a",
-                                            name_column_mN2_a: str = "mN2_a",
-                                            name_column_CTot_b: str = "mCTot_b",
-                                            name_column_cTot_a: str = "mCTot_a"
-                                            ):
+    def run_mol_gas_composition_calculation(self):
         # CO2 before
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mCO2_b,
+                                                                            name_column=self.create_name_column_mCO2_b,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_bs,
+                                                                            self.create_name_column_mg_bs,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_CO2)
+                                                                            self.create_name_correction_co2)
         # CH4 before
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mCH4_b,
+                                                                            name_column=self.create_name_column_mCH4_b,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_bs,
+                                                                            self.create_name_column_mg_bs,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_CH4)
+                                                                            self.create_name_correction_ch4)
         # O2 before
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mO2_b,
+                                                                            name_column=self.create_name_column_mCO2_b,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_bs,
+                                                                            self.create_name_column_mg_bs,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_O2)
+                                                                            self.create_name_correction_o2)
         # N2 before
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mN2_b,
+                                                                            name_column=self.create_name_column_mN2_b,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_bs,
+                                                                            self.create_name_column_mg_bs,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_N2)
+                                                                            self.create_name_correction_n2)
         # total carbon before
-        MolGasCompositionCalculations.carbon_total_moles(data_frame=self.data_frame, name_column=name_column_CTot_b,
-                                                         name_column_CO2=name_column_mCO2_b,
-                                                         name_column_CH4=name_column_mCH4_b)
+        MolGasCompositionCalculations.carbon_total_moles(data_frame=self.data_frame,
+                                                         name_column=self.create_name_column_CTot_b,
+                                                         name_column_CO2=self.create_name_column_mCO2_b,
+                                                         name_column_CH4=self.create_name_column_mCH4_b)
 
         # CO2 after
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mCO2_a,
+                                                                            name_column=self.create_name_column_mCO2_a,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_as,
+                                                                            self.create_name_column_mg_as,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_CO2)
+                                                                            self.create_name_correction_co2)
         # CH4 after
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mCH4_a,
+                                                                            name_column=self.create_name_column_mCH4_a,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_as,
+                                                                            self.create_name_column_mg_as,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_CH4)
+                                                                            self.create_name_correction_ch4)
         # O2 after
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mO2_a,
+                                                                            name_column=self.create_name_column_mO2_a,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_as,
+                                                                            self.create_name_column_mg_as,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_O2)
+                                                                            self.create_name_correction_o2)
         # N2 after
         MolGasCompositionCalculations.specific_gas_in_moles_before_sampling(data_frame=self.data_frame,
-                                                                            name_column=name_column_mN2_a,
+                                                                            name_column=self.create_name_column_mN2_a,
                                                                             name_column_mg_before_or_after=
-                                                                            name_column_mg_as,
+                                                                            self.create_name_column_mg_as,
                                                                             name_column_specific_gas_corrected=
-                                                                            name_corr_N2)
+                                                                            self.create_name_correction_n2)
         # total carbon before
-        MolGasCompositionCalculations.carbon_total_moles(data_frame=self.data_frame, name_column=name_column_cTot_a,
-                                                         name_column_CO2=name_column_mCO2_a,
-                                                         name_column_CH4=name_column_mCH4_a)
+        MolGasCompositionCalculations.carbon_total_moles(data_frame=self.data_frame,
+                                                         name_column=self.create_name_column_cTot_a,
+                                                         name_column_CO2=self.create_name_column_mCO2_a,
+                                                         name_column_CH4=self.create_name_column_mCH4_a)
 
-        DataFrameProcessor.replace_position_column(data_frame=self.data_frame, name_replaced_column=name_column_mg_as,
-                                                   name_column_of_position=name_column_mCO2_a)
+        # reposition the column
+        DataFrameProcessor.replace_position_column(data_frame=self.data_frame,
+                                                   name_replaced_column=self.create_name_column_mg_as,
+                                                   name_column_of_position=self.create_name_column_mCO2_a)
 
     def run_moles_produced(self,
                            name_column_mCTot_produced: str = "mCTot_produced",
