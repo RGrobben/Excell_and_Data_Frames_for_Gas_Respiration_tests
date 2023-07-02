@@ -31,7 +31,8 @@ class ExcelManager:
         self.sheet_names = {}
 
     def load_workbook(self) -> None:
-        """Load the Excel file as a workbook."""
+        """Load the Excel file as a workbook. With data only on True, the workbook is loaded with
+        only the values of the cell and not the formulas."""
         self.workbook_values = load_workbook(filename=self.file_path, data_only=True)
         self.workbook_formula = load_workbook(filename=self.file_path)
 
@@ -71,6 +72,10 @@ class ExcelManager:
                 The last row of the range to load. If None, loads until the last row.
             end_column : int, optional
                 The last column of the range to load. If None, loads until the last column.
+            values_only: bool = True,
+                Set True, If you only want to use the workbook with only the values and not also the formulas.
+            data_only: bool = False
+                Set True, if fou only want the values of the cell and not other additional properties.
 
             Raises
             ------
@@ -80,15 +85,6 @@ class ExcelManager:
             Returns
             -------
             pd.DataFrame
-                The loaded data as a pandas DataFrame, with the first row of the loaded range as headers.
-                :param sheet_name:
-                :param start_row:
-                :param start_column:
-                :param end_row:
-                :return:
-                :param end_column:
-                :param data_only:
-                :param values_only:
             """
 
         if data_only is not None:
@@ -125,7 +121,7 @@ class ExcelManager:
             data_only: bool = False
     ):
         """
-            Load a portion of an Excel sheet as a pandas DataFrame.
+            Load a portion of an Excel sheet as a pandas DataFrame. With your own given list of column names.
 
             Parameters
             ----------
@@ -133,12 +129,18 @@ class ExcelManager:
                 The name of the sheet to load.
             start_row : int
                 The first row of the range to load.
+            column_names: [str]
+                A list of the names of the columns
             start_column : int, optional
                 The first column of the range to load. If None, starts from the first column.
             end_row : int, optional
                 The last row of the range to load. If None, loads until the last row.
             end_column : int, optional
                 The last column of the range to load. If None, loads until the last column.
+            values_only: bool = True,
+                Set True, If you only want to use the workbook with only the values and not also the formulas.
+            data_only: bool = False
+                Set True, if fou only want the values of the cell and not other additional properties.
 
             Raises
             ------
@@ -148,16 +150,6 @@ class ExcelManager:
             Returns
             -------
             pd.DataFrame
-                The loaded data as a pandas DataFrame, with the first row of the loaded range as headers.
-                :param column_names:
-                :param sheet_name:
-                :param start_row:
-                :param start_column:
-                :param end_row:
-                :return:
-                :param end_column:
-                :param data_only:
-                :param values_only:
             """
 
         if data_only is not None:
@@ -189,7 +181,34 @@ class ExcelManager:
             end_row: int = None,
             values_only: bool = True,
             data_only: bool = False
-    ):
+    ) -> pd.DataFrame:
+        """
+            Load constants from a specified sheet in the workbook and return them as a pandas DataFrame.
+
+            Parameters:
+                - sheet_name (str): The name of the sheet containing the constants.
+                - start_row (int): The starting row index for reading constants.
+                - start_col (int): The starting column index for reading constants.
+                - end_row (int, optional): The ending row index for reading constants.
+                 Defaults to None, indicating reading until the last row.
+                - values_only (bool, optional): Whether to retrieve only the values of cells. Defaults to True.
+                - data_only (bool, optional): Whether to load the workbook with only calculated values. Defaults to False.
+
+            Returns:
+                pd.DataFrame: A pandas DataFrame containing the loaded constants.
+
+            Raises:
+                Exception: If the workbook is not loaded.
+
+            Note:
+                - If `data_only` is True, the workbook with calculated values is used.
+                Otherwise, the workbook with formulas is used.
+                - The constants are extracted from the specified sheet in the workbook,
+                starting from the given row and column indices.
+                - If `end_row` is not provided, constants will be read until the last row of the sheet.
+                - The constants are returned as a DataFrame with constant names as column names and
+                constant values in a single row.
+            """
         if data_only:
             workbook = self.workbook_values
         else:
@@ -225,6 +244,34 @@ class ExcelManager:
             values_only: bool = True,
             data_only: bool = False
     ) -> ConstantsSample:
+        """
+            Load constants from a specified sheet in the workbook and assign them to a data class instance.
+
+            Parameters:
+                - sheet_name (str): The name of the sheet containing the constants.
+                - start_row (int): The starting row index for reading constants.
+                - start_col (int): The starting column index for reading constants.
+                - end_row (int, optional): The ending row index for reading constants.
+                 Defaults to None, indicating reading until the last row.
+                - values_only (bool, optional): Whether to retrieve only the values of cells. Defaults to True.
+                - data_only (bool, optional): Whether to load the workbook with only calculated values.
+                Defaults to False.
+
+            Returns:
+                ConstantsSample: An instance of the ConstantsSample data class with assigned constants.
+
+            Raises:
+                Exception: If the workbook is not loaded.
+
+            Note:
+                - If `data_only` is True, the workbook with calculated values is used.
+                 Otherwise, the workbook with formulas is used.
+                - The constants are extracted from the specified sheet in the workbook,
+                starting from the given row and column indices.
+                - If `end_row` is not provided, constants will be read until the last row of the sheet.
+                - The constants are assigned to the corresponding fields of the ConstantsSample data class instance.
+                - The ConstantsSample data class must be defined with fields matching the constant names in the sheet.
+            """
         if data_only:
             workbook = self.workbook_values
         else:
@@ -264,8 +311,42 @@ class ExcelManager:
             header: bool,
             data_frame: pd.DataFrame,
             start_column: int = 1,
-
     ) -> None:
+        """
+         Replace a table in a specific sheet of an Excel file with the contents of a DataFrame.
+
+         Parameters:
+             - excel_file_path (str): The file path of the Excel file.
+             - sheet_name (str): The name of the sheet where the table exists.
+             - start_row (int): The starting row index to write the DataFrame contents.
+             - header (bool): Whether the DataFrame has a header row.
+             - data_frame (pd.DataFrame): The DataFrame containing the data to write.
+             - start_column (int, optional): The starting column index to write the DataFrame contents. Defaults to 1.
+
+         Returns:
+             None
+
+         Raises:
+             Exception: If the excel_file_path is empty or the file does not exist.
+
+         Note:
+             - The method opens the Excel file specified by excel_file_path and loads the specified sheet.
+             - The existing table in the sheet, starting from the specified start_row and start_column, is removed.
+             - The DataFrame contents are written to the worksheet, starting from the specified start_row and start_column.
+             - If header=True, the DataFrame's column names are written as the first row.
+             - The DataFrame's data is written row by row, with each row corresponding to a row in the worksheet.
+             - After writing the DataFrame to the worksheet, the modified workbook is saved back to the original file.
+
+         Example:
+             replace_table_in_specific_sheet_with_data_frame(
+                 excel_file_path='path/to/excel_file.xlsx',
+                 sheet_name='Sheet1',
+                 start_row=2,
+                 header=True,
+                 data_frame=my_data_frame,
+                 start_column=1
+             )
+         """
         if not excel_file_path:
             raise Exception("there is no excel_file with that path")
 
@@ -312,6 +393,24 @@ class ExcelManager:
                                     sheets: list[str],
                                     print_process: False | True = False,
                                     ) -> None:
+        """
+         Fill the dictionary of pandas DataFrames with a single DataFrame for specified sheet names.
+
+         Parameters:
+             - data_frame (pd.DataFrame): The DataFrame to be assigned to each sheet name in the dictionary.
+             - sheets (list[str]): A list of sheet names to assign the DataFrame.
+             - print_process (bool, optional): Whether to print the process for each assigned sheet name.
+             Defaults to False.
+
+         Returns:
+             None
+
+         Note:
+             - The method assigns the provided DataFrame to each sheet name in the dictionary `dict_panda_data_frames`.
+             - The DataFrame is assigned to each sheet name as the value in the dictionary.
+             - The provided DataFrame is the same for all sheet names in the list.
+             - If `print_process` is True, a message will be printed for each assigned sheet name.
+         """
 
         sheet_names = sheets
 
@@ -322,6 +421,11 @@ class ExcelManager:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_panda_data_frames(self) -> {str, pd.DataFrame}:
+        """
+        Get the dictionary of pandas DataFrames.
+        Returns:
+        dict[str, pd.DataFrame]: The dictionary containing sheet names as keys and corresponding DataFrames as values.
+        """
         return self.dict_panda_data_frames
 
     def fill_dict_constants_data_frames(self,
@@ -329,6 +433,23 @@ class ExcelManager:
                                         sheets: list[str],
                                         print_process: False | True = False,
                                         ) -> None:
+        """
+            Fill the dictionary of constants data frames with a single data frame for specified sheet names.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The data frame to be assigned to each sheet name in the dictionary.
+                - sheets (list[str]): A list of sheet names to assign the data frame.
+                - print_process (bool, optional): Whether to print the process for each assigned sheet name. Defaults to False.
+
+            Returns:
+                None
+
+            Note:
+                - The method assigns the provided data frame to each sheet name in the dictionary `dict_constants_data_frames`.
+                - The data frame is assigned to each sheet name as the value in the dictionary.
+                - The provided data frame is the same for all sheet names in the list.
+                - If `print_process` is True, a message will be printed for each assigned sheet name.
+            """
 
         sheet_names = sheets
 
@@ -339,6 +460,11 @@ class ExcelManager:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_constants_data_frames(self) -> {str, pd.DataFrame}:
+        """
+        Get the dictionary of constants data frames.
+        Returns:
+        dict[str, pd.DataFrame]: The dictionary containing sheet names as keys and corresponding data frames as values.
+        """
         return self.dict_constants_data_frames
 
     def fill_dict_constants_data_classes(self,
@@ -346,6 +472,26 @@ class ExcelManager:
                                          sheets: list[str],
                                          print_process: False | True = False,
                                          ) -> None:
+        """
+            Fill the dictionary of constants data classes with a single data class instance for specified sheet names.
+
+            Parameters:
+                - data_class (ConstantsSample): The data class instance to be assigned to each sheet name in the
+                dictionary.
+                - sheets (list[str]): A list of sheet names to assign the data class instance.
+                - print_process (bool, optional): Whether to print the process for each assigned sheet name.
+                Defaults to False.
+
+            Returns:
+                None
+
+            Note:
+                - The method assigns the provided data class instance to each sheet name in the dictionary
+                `dict_constants_data_classes`.
+                - The data class instance is assigned to each sheet name as the value in the dictionary.
+                - The provided data class instance is the same for all sheet names in the list.
+                - If `print_process` is True, a message will be printed for each assigned sheet name.
+            """
         sheet_names = sheets
 
         for sheet_name in sheet_names:
@@ -355,18 +501,42 @@ class ExcelManager:
                 print(f'Show process: {sheet_name} is done')
 
     def get_dict_constants_data_classes(self) -> {str, ConstantsSample}:
+        """
+        Get the dictionary of constants data classes.
+        Returns:
+        dict[str, ConstantsSample]: The dictionary containing sheet names as keys and corresponding data class instances as values.
+        :return:
+        """
         return self.dict_constants_data_classes
 
     def create_new_workbook(self, data_only: bool = False, **kwargs) -> Workbook:
+        """
+        Create a new Workbook object by loading an existing workbook file.
+
+        Parameters:
+        - data_only (bool, optional): Whether to load the workbook with only calculated values. Defaults to False.
+        - **kwargs: Additional keyword arguments to be passed to the `load_workbook` function.
+
+        Returns:
+        Workbook: The newly created Workbook object.
+        :param data_only:
+        :param kwargs:
+        :return:
+        """
         return load_workbook(filename=self.file_path, data_only=data_only, **kwargs)
 
     @staticmethod
     def make_excel_based_on_workbook(workbook: Workbook, path_directory: str, filename: str) -> None:
         """
         Save a workbook to the specified directory path.
-        :param filename: file name of the new excell.
-        :param workbook: The workbook to save.
-        :param path_directory: The directory path to save the workbook.
+
+        Parameters:
+            - workbook (Workbook): The workbook to save.
+            - path_directory (str): The directory path to save the workbook.
+            - filename (str): The file name of the new Excel file.
+
+        Returns:
+            None
         """
         filepath = os.path.join(path_directory, filename)
         filepath_with_extension = filepath + ".xlsx"
