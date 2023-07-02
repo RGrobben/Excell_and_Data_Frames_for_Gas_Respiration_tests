@@ -1,3 +1,5 @@
+import pandas as pd
+
 from data_frame_processor import DataFrameProcessor
 from data_frame_calculations import PercentageO2ConsumedAndCO2ProducedAndRatio, \
     MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, \
@@ -6,10 +8,10 @@ from data_frame_calculations_standard_for_gas_respiration_tests import GasCompos
 
 
 class RunDataFrameCalculationsForOneDataFrame:
-    """"run the calculations on one data frame"""
+    """"Combine all the calculations to do it for one data frame."""
     data_frame: object
 
-    def __init__(self, data_frame):
+    def __init__(self, data_frame: pd.DataFrame):
         self.data_frame = data_frame
 
         self.get_column_name_date: str = "Date"
@@ -306,7 +308,7 @@ class RunDataFrameCalculationsForOneDataFrame:
             dry_mass_sample=dry_mass_sample,
         )
 
-    def run_results_Interpretations(self,):
+    def run_results_Interpretations(self):
         ResultsInterpretations.total_carbon_dry_matter(
             data_frame=self.data_frame,
             name_column=self.create_name_column_Ctot_DM,
