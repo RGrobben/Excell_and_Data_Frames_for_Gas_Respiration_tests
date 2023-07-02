@@ -83,7 +83,6 @@ class NiceExcelFunction:
         # If the search string is not found, raise an exception
         raise ValueError(f"Search string '{search_string}' not found in the header row.")
 
-
     @staticmethod
     def get_cell_value_pandas(file_path, sheet_name, cell):
         df = pd.read_excel(file_path, sheet_name=sheet_name)
