@@ -2,7 +2,7 @@ import pandas as pd
 from openpyxl.workbook import Workbook
 
 from nice_functions import NiceExcelFunction
-from statistics_file.statistics import find_column_outliers
+from statistics.statistics import find_column_outliers
 from validation_input_data.general_validation_functions import validate_if_there_is_a_float_or_integer_in_cell, \
     validate_if_there_is_no_specific_float_or_integer_in_cell, validate_if_there_is_a_specific_string, \
     validate_if_there_is_in_cell_one_of_the_specific_strings, validate_if_in_cell_is_correct_date_or_not_filled, \

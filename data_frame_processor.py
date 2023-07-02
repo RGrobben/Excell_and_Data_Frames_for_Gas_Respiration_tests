@@ -4,7 +4,7 @@ from typing import Any
 
 class DataFrameProcessor:
     """
-    A class for processing pandas DataFrames standard calculations.
+    A class for processing pandas DataFrames standard operations.
     """
 
     @staticmethod

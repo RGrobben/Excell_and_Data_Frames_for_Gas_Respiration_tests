@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from statistics_file.statistics import find_column_outliers
+from statistics.statistics import find_column_outliers
 
 
 class TestFindColumnOutliers(unittest.TestCase):
