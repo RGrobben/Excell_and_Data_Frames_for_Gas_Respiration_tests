@@ -63,6 +63,9 @@ class RunDataFrameCalculationsForOneDataFrame:
         self.create_name_column_CO2_produced_aq_cum: str = "CO2_produced_aq_cum"
         self.create_name_column_DIC_cum: str = "DIC_cum"
 
+        self.create_name_column_Ctot_DM: str = "Ctot_DM [mg C/gDW]"
+        self.create_name_column_ratio_O2_CO2: str = "Ratio O2/CO2"
+
     def run_data_frame_processor_calculations(self, dayfirst: bool = False):
         DataFrameProcessor.add_day_column(data_frame=self.data_frame, date_column_name=self.get_column_name_date,
                                           time_column_name=self.get_name_column_time, dayfirst=dayfirst)
@@ -302,36 +305,26 @@ class RunDataFrameCalculationsForOneDataFrame:
         CarbonInAqueousPhase.dissolved_inorganic_carbon_cumulative(
             data_frame=self.data_frame,
             name_column=self.create_name_column_DIC_cum,
-            column_name_CO2_aq_in_mol_per_m3=self.create_name_column_CO2_before_aq_mol_per_m3,
+            column_name_CO2_aq_in_mol_per_m3=self.create_name_column_CO2_produced_aq_cum,
             dry_mass_sample=dry_mass_sample,
-            water_volume_in_liters=water_volume_in_liters,
         )
 
-    def run_results_Interpretations(self,
-                                    name_column_Ctot_DM: str = "Ctot_DM [mg C/gDW]",
-                                    name_column_ratio_O2_CO2: str = "Ratio O2/CO2",
-                                    name_column_flush: str = "Flush (1=yes; 0=no)",
-                                    name_column_C_gas_dry_mass_cumulative: str = "Cgas_DM_cum",
-                                    name_column_DIC_cum: str = "DIC_cum",
-                                    name_column_oxygen_consumed: str = "O2 consumed",
-                                    name_column_C_dioxide_produced: str = "CO2 produced",
-                                    name_column_CO2_dissolved_between_time_steps_aq: str =
-                                    "CO2_dissolved_between_time_steps_aq",
-                                    ):
+    def run_results_Interpretations(self,):
         ResultsInterpretations.total_carbon_dry_matter(
             data_frame=self.data_frame,
-            name_column=name_column_Ctot_DM,
-            name_column_flush=name_column_flush,
+            name_column=self.create_name_column_Ctot_DM,
+            name_column_flush=self.get_name_column_flush,
             name_column_C_gas_dry_mass_cum=
-            name_column_C_gas_dry_mass_cumulative,
-            name_column_DIC_cum=name_column_DIC_cum,
+            self.create_name_column_C_gas_dry_mass_cumulative,
+            name_column_DIC_cum=self.create_name_column_DIC_cum,
         )
 
         ResultsInterpretations.ratio_oxygen_consumed_carbon_dioxide_produced(
             data_frame=self.data_frame,
-            name_column=name_column_ratio_O2_CO2,
-            name_column_O2_consumed_mol=name_column_oxygen_consumed,
-            name_column_CO2_produced_gas_mol=name_column_C_dioxide_produced,
-            carbon_dioxide_dissolved_between_time_steps_aqueous=name_column_CO2_dissolved_between_time_steps_aq,
-            name_column_flush=name_column_flush
+            name_column=self.create_name_column_ratio_O2_CO2,
+            name_column_O2_consumed_mol=self.create_name_column_oxygen_consumed,
+            name_column_CO2_produced_gas_mol=self.create_name_name_column_carbon_dioxide_produced,
+            carbon_dioxide_dissolved_between_time_steps_aqueous=
+            self.create_name_column_CO2_dissolved_between_time_steps_aq,
+            name_column_flush=self.get_name_column_flush
         )

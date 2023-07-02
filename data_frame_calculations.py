@@ -217,18 +217,19 @@ class CarbonInAqueousPhase:
                                                          carbon_dioxide_dissolved_between_time_steps_aqueous: str) -> None:
         data_frame[name_column] = data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous].cumsum()
 
+
     @staticmethod
     def dissolved_inorganic_carbon_cumulative(data_frame: pd.DataFrame, name_column: str,
                                               column_name_CO2_aq_in_mol_per_m3: str,
                                               dry_mass_sample: float,
-                                              water_volume_in_liters: float,
                                               molar_mass_carbon: float = 12
                                               ):
         """
 
         :type molar_mass_carbon: molar mass of carbon. is constant and set to 12 g/mol
         """
-        constant = molar_mass_carbon * (water_volume_in_liters / dry_mass_sample)
+        gram_to_mmg = 1000
+        constant = molar_mass_carbon * (gram_to_mmg / dry_mass_sample)
 
         data_frame[name_column] = (data_frame[column_name_CO2_aq_in_mol_per_m3] * constant)
 
@@ -255,8 +256,10 @@ class ResultsInterpretations:
                                                       carbon_dioxide_dissolved_between_time_steps_aqueous: str,
                                                       name_column_flush: str, first_row_value: float = 0
                                                       ):
-        data_frame[name_column] = data_frame[name_column_O2_consumed_mol] / (
-                data_frame[name_column_CO2_produced_gas_mol] + data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous])
+        data_frame[name_column] = data_frame[name_column_O2_consumed_mol] /\
+                                  (data_frame[name_column_CO2_produced_gas_mol] +
+                                   data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous])
+
 
         data_frame[name_column].at[0] = first_row_value
         mask = (data_frame[name_column_flush] == 1)
