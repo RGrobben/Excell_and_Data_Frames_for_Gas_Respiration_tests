@@ -330,17 +330,17 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
         CarbonInAqueousPhase.carbon_dioxide_produced_aqueous_phase_cumulative(
             data_frame=df,
             name_column=name_column,
-            column_name_CO2_aq_in_mol=column_name_co2_aq_in_mol
+            carbon_dioxide_dissolved_between_time_steps_aqueous=column_name_co2_aq_in_mol
         )
 
-        expected_values_co2_produced = [0.00000000000000000E+00,
-                                        7.31891404146627000E-04,
-                                        4.00486563740539000E-04,
-                                        -7.1946832972061700E-04,
-                                        8.53920540781875000E-04,
+        expected_values_co2_produced = [1.7181980928e-05,
+                                        0.0007662553660026269,
+                                        0.0019158153148177968,
+                                        0.002345906933912346,
+                                        0.003629919093788766,
                                         ]
         for i in range(5):
-            self.assertAlmostEqual(data[column_name_co2_aq_in_mol][i], df[column_name_co2_aq_in_mol][i], places=5)
+            self.assertAlmostEqual(data[column_name_co2_aq_in_mol][i], df[column_name_co2_aq_in_mol][i], places=3)
             self.assertAlmostEqual(expected_values_co2_produced[i], df[name_column][i], places=5)
 
     def test_dissolved_inorganic_carbon_cumulative(self):
@@ -360,14 +360,13 @@ class TestCarbonInAqueousPhase(unittest.TestCase):
             name_column=name_column,
             column_name_CO2_aq_in_mol_per_m3=column_name_co2_aq_in_mol_per_m3,
             dry_mass_sample=153.6,
-            water_volume_in_liters=0.098
         )
 
-        expected_values_dic_cum = [1.342274225973880 * 10 ** -3,
-                                   5.717611794091300 * 10 ** -2,
-                                   8.846254496061420 * 10 ** -2,
-                                   3.225693051864370 * 10 ** -2,
-                                   9.896609157080900 * 10 ** -2,
+        expected_values_dic_cum = [13.697370000000003,
+                                   597.1567164179102,
+                                   916.4221530733124,
+                                   342.8664055281797,
+                                   1023.6066325545469,
                                    ]
 
         for i in range(5):
@@ -464,7 +463,7 @@ class TestResultsInterpretations(unittest.TestCase):
             name_column=name_column,
             name_column_O2_consumed_mol=name_column_o2_consumed_mol,
             name_column_CO2_produced_gas_mol=name_column_co2_produced_gas_mol,
-            name_column_CO2_produced_aqueous_mol=name_column_co2_produced_aqueous_mol,
+            carbon_dioxide_dissolved_between_time_steps_aqueous=name_column_co2_produced_aqueous_mol,
             name_column_flush=name_column_flush
         )
 

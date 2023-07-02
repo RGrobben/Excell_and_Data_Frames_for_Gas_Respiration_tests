@@ -186,7 +186,7 @@ class CarbonInAqueousPhase:
                                                    henry_law_constant: float = (5.23 * 10 ** -3)) -> None:
         """
         :param data_frame: pd.DataFrame
-        :param name_column: column name for the new created column for the calculation/
+        :param name_column: column name for the new created column for the calculation.
         :param column_name_PP_CO2: The column name partial pressure carbon dioxide  sampling.
         :param henry_law_constant: constant of the Henry law for CO2. Default at 20 degrees.
 
