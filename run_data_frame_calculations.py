@@ -3,7 +3,6 @@ from data_frame_calculations import PercentageO2ConsumedAndCO2ProducedAndRatio, 
     MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, \
     ResultsInterpretations
 from data_frame_calculations_standard_for_gas_respiration_tests import GasComposition, MolGasCompositionCalculations
-import pandas as pd
 
 
 class RunDataFrameCalculationsForOneDataFrame:
