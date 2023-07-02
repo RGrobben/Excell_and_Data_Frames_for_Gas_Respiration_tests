@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from data_frame_calculations import MolesProduced, CumulativeProductionGasPhase, GasComposition, \
-    MolGasCompositionCalculations, CarbonInAqueousPhase, ResultsInterpretations
+from data_frame_calculations import MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, ResultsInterpretations
+from data_frame_calculations_standard_for_gas_respiration_tests import GasComposition, MolGasCompositionCalculations
 
 
 class TestGasComposition(unittest.TestCase):

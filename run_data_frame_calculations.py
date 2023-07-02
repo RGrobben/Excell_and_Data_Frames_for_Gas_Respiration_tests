@@ -1,7 +1,8 @@
 from data_frame_processor import DataFrameProcessor
-from data_frame_calculations import GasComposition, PercentageO2ConsumedAndCO2ProducedAndRatio, \
-    MolGasCompositionCalculations, MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, \
+from data_frame_calculations import PercentageO2ConsumedAndCO2ProducedAndRatio, \
+    MolesProduced, CumulativeProductionGasPhase, CarbonInAqueousPhase, \
     ResultsInterpretations
+from data_frame_calculations_standard_for_gas_respiration_tests import GasComposition, MolGasCompositionCalculations
 import pandas as pd
 
 
