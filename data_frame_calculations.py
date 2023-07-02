@@ -174,6 +174,9 @@ class CarbonInAqueousPhase:
                                         column_name_pressure_sampling: str,
                                         column_name_corrected_carbon_dioxide_in_percentage: str
                                         ) -> None:
+        if np.isnan(data_frame.at[0, column_name_pressure_sampling]):
+            data_frame.at[0, column_name_pressure_sampling] = 0
+
         data_frame[name_column] = data_frame[column_name_pressure_sampling] * 100 * \
                                   data_frame[column_name_corrected_carbon_dioxide_in_percentage] / 100
 
