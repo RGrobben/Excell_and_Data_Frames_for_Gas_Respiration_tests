@@ -64,6 +64,23 @@ class MolesProduced:
     def total_carbon_produced_moles(data_frame: pd.DataFrame, name_column: str,
                                     name_column_mCTot_b: str, name_column_mCTot_a: str,
                                     name_column_flush: str, first_row_value: float = 0) -> None:
+        """
+            Calculate the total moles of carbon produced in the DataFrame.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str): The name of the column to store the calculated total moles of carbon produced [mol]
+                - name_column_mCTot_b (str): The name of the column containing the cumulative carbon
+                gas produced (after sampling). [mol]
+                - name_column_mCTot_a (str): The name of the column containing the cumulative carbon
+                gas produced (before sampling). [mol]
+                - name_column_flush (str): The name of the column used for flushing indication.
+                - first_row_value (float, optional): The value to set for the first row of the total
+                carbon produced column. Defaults to 0.
+
+            Returns:
+                None
+            """
         data_frame[name_column] = data_frame[name_column_mCTot_b] - data_frame[name_column_mCTot_a].shift(1)
         data_frame[name_column].at[0] = first_row_value
 
@@ -79,9 +96,9 @@ class MolesProduced:
 
         Parameters:
         data_frame (pd.DataFrame): DataFrame which includes columns for the calculation.
-        name_column (str): Name of the new column where the result will be stored.
-        name_column_mCTot_b (str): column name for the O2 in moles before sampling
-        name_column_mCTot_a (str): column name for the O2 in moles after sampling
+        name_column (str): Name of the new column where the result will be stored. [mol]
+        name_column_mCTot_b (str): column name for the O2 in moles before sampling [mol]
+        name_column_mCTot_a (str): column name for the O2 in moles after sampling [mol]
         """
         # if not all(col in data_frame.columns for col in [name_column_mO2_b, name_column_mO2_a]):
         #     raise ValueError("All specified columns must be present in the DataFrame")
@@ -102,9 +119,9 @@ class MolesProduced:
 
         Parameters:
         data_frame (pd.DataFrame): DataFrame which includes columns for the calculation.
-        name_column (str): Name of the new column where the result will be stored.
-        name_column_mCTot_b (str): column name for the CO2 in moles before sampling
-        name_column_mCTot_a (str): column name for the CO2 in moles after sampling
+        name_column (str): Name of the new column where the result will be stored. [mol]
+        name_column_mCTot_b (str): column name for the CO2 in moles before sampling [mol]
+        name_column_mCTot_a (str): column name for the CO2 in moles after sampling [mol]
         first_row_value (float): Value to be assigned to the first row of the new column.
         """
         if not all(col in data_frame.columns for col in [name_column_mCO2_b, name_column_mCO2_a]):
@@ -127,8 +144,8 @@ class CumulativeProductionGasPhase:
         This cumulative operation is especially for the gas measurements with flushing.
 
         :param data_frame: the input data frame for the operations.
-        :param name_column_cum: the name of the new created column for the cumulative values.
-        :param name_column_produced_or_consumed: the name of the values to be cumulated.
+        :param name_column_cum: the name of the new created column for the cumulative values. [mol]
+        :param name_column_produced_or_consumed: the name of the values to be cumulated. [mol]
         :param name_column_flush: the name of the flush column (zeros and ones)
         :param first_row_value: the value for the first row.
         """
@@ -158,6 +175,24 @@ class CumulativeProductionGasPhase:
                                        dry_mass_sample: float,
                                        name_column_flush: str,
                                        first_row_value: float = 0) -> None:
+        """
+            Calculate the cumulative carbon gas dry mass in the DataFrame.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str): The name of the column to store the calculated cumulative carbon gas dry mass \
+                [mg C/g DW (Dry Weight)]
+                - name_column_mCTot_produced_cumulative (str): The name of the column containing the cumulative
+                carbon gas produced. [mol]
+                - molar_mass_carbon (float): The molar mass of carbon. [g / mol]
+                - dry_mass_sample (float): The dry mass of the sample. [g]
+                - name_column_flush (str): The name of the column used for flushing indication.
+                - first_row_value (float, optional): The value to set for the first row of the cumulative column.
+                Defaults to 0.
+
+            Returns:
+                None
+            """
 
         constant = molar_mass_carbon * (1000 / dry_mass_sample)
         data_frame[name_column] = np.where(data_frame[name_column_flush] == 0,
@@ -174,6 +209,21 @@ class CarbonInAqueousPhase:
                                         column_name_pressure_sampling: str,
                                         column_name_corrected_carbon_dioxide_in_percentage: str
                                         ) -> None:
+        """
+            Calculate the partial pressure of carbon dioxide in the DataFrame.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str):
+                The name of the column to store the calculated partial pressure of carbon dioxide.[Pa]
+                - column_name_pressure_sampling (str):
+                The name of the column containing the pressure during sampling. [hPa]
+                - column_name_corrected_carbon_dioxide_in_percentage (str):
+                The name of the column containing the corrected carbon dioxide in percentage. [%]
+
+            Returns:
+                None
+            """
         if np.isnan(data_frame.at[0, column_name_pressure_sampling]):
             data_frame.at[0, column_name_pressure_sampling] = 0
 
@@ -186,8 +236,8 @@ class CarbonInAqueousPhase:
                                                    henry_law_constant: float = (5.23 * 10 ** -3)) -> None:
         """
         :param data_frame: pd.DataFrame
-        :param name_column: column name for the new created column for the calculation.
-        :param column_name_PP_CO2: The column name partial pressure carbon dioxide  sampling.
+        :param name_column: column name for the new created column for the calculation. [mol/m3]
+        :param column_name_PP_CO2: The column name partial pressure carbon dioxide  sampling. [Pa]
         :param henry_law_constant: constant of the Henry law for CO2. Default at 20 degrees.
 
         Return:
@@ -200,14 +250,43 @@ class CarbonInAqueousPhase:
     def carbon_dioxide_in_aqueous_phase_mol(data_frame: pd.DataFrame, name_column: str,
                                             column_name_CO2_aq_in_mol_per_m3: str,
                                             water_volume_in_liters: float) -> None:
+        """
+            Calculate the amount of carbon dioxide in the aqueous phase in moles in the DataFrame.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str):
+                The name of the column to store the calculated amount of carbon dioxide in the aqueous phase. [mol]
+                - column_name_CO2_aq_in_mol_per_m3 (str):
+                The name of the column containing the carbon dioxide in moles per cubic meter. [mol/m3]
+                - water_volume_in_liters (float): The volume of water in liters. [l]
+
+            Returns:
+                None
+            """
         data_frame[name_column] = data_frame[column_name_CO2_aq_in_mol_per_m3] * (water_volume_in_liters / 1000)
 
     @staticmethod
     def carbon_dioxide_dissolved_between_time_steps_aqueous(data_frame: pd.DataFrame, name_column: str,
                                                             column_name_CO2_before_aq_in_mol: str,
-                                                            column_name_CO2_after_aq_in_mol: str):
+                                                            column_name_CO2_after_aq_in_mol: str) -> None:
+        """
+            Calculate the amount of carbon dioxide dissolved between time steps in the aqueous phase in the DataFrame.
+
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str): The name of the column to store the calculated amount of carbon dioxide
+                dissolved in the aqueous phase. [mol]
+                - column_name_CO2_before_aq_in_mol (str): The name of the column containing the carbon dioxide
+                in moles in the aqueous phase (before time step). [mol]
+                - column_name_CO2_after_aq_in_mol (str): The name of the column containing the carbon dioxide
+                in moles in the aqueous phase (after time step). [mol]
+
+            Returns:
+                None
+            """
         data_frame[name_column] = data_frame[column_name_CO2_before_aq_in_mol] - \
-                                      data_frame[column_name_CO2_after_aq_in_mol].shift(1)
+                                  data_frame[column_name_CO2_after_aq_in_mol].shift(1)
 
         data_frame.loc[0, name_column] = data_frame[column_name_CO2_before_aq_in_mol].at[0] - \
                                          data_frame[column_name_CO2_after_aq_in_mol].at[0]
@@ -215,8 +294,20 @@ class CarbonInAqueousPhase:
     @staticmethod
     def carbon_dioxide_produced_aqueous_phase_cumulative(data_frame: pd.DataFrame, name_column: str,
                                                          carbon_dioxide_dissolved_between_time_steps_aqueous: str) -> None:
-        data_frame[name_column] = data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous].cumsum()
+        """
+            Calculate the cumulative amount of carbon dioxide produced in the aqueous phase in the DataFrame.
 
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str): The name of the column to store the calculated cumulative amount of carbon
+                dioxide produced in the aqueous phase. [mol]
+                - carbon_dioxide_dissolved_between_time_steps_aqueous (str): The name of the column containing
+                the amount of carbon dioxide dissolved between time steps in the aqueous phase. [mol]
+
+            Returns:
+                None
+            """
+        data_frame[name_column] = data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous].cumsum()
 
     @staticmethod
     def dissolved_inorganic_carbon_cumulative(data_frame: pd.DataFrame, name_column: str,
@@ -225,9 +316,20 @@ class CarbonInAqueousPhase:
                                               molar_mass_carbon: float = 12
                                               ):
         """
+            Calculate the cumulative dissolved inorganic carbon in the DataFrame.
 
-        :type molar_mass_carbon: molar mass of carbon. is constant and set to 12 g/mol
-        """
+            Parameters:
+                - data_frame (pd.DataFrame): The DataFrame to modify.
+                - name_column (str): The name of the column to store the calculated cumulative
+                dissolved inorganic carbon. [mg C/g DW (Dry Weight)]
+                - column_name_CO2_aq_in_mol_per_m3 (str): The name of the column containing the
+                carbon dioxide in moles per cubic meter in the aqueous phase. [mol/m3]
+                - dry_mass_sample (float): The dry mass of the sample. [g]
+                - molar_mass_carbon (float, optional): The molar mass of carbon. Defaults to 12 g/mol. [g/mol]
+
+            Returns:
+                None
+            """
         gram_to_mmg = 1000
         constant = molar_mass_carbon * (gram_to_mmg / dry_mass_sample)
 
@@ -240,6 +342,24 @@ class ResultsInterpretations:
     def total_carbon_dry_matter(data_frame: pd.DataFrame, name_column: str, name_column_flush: str,
                                 name_column_C_gas_dry_mass_cum: str, name_column_DIC_cum: str,
                                 first_row_value: float = 0) -> None:
+        """
+           Calculate the total carbon dry matter in the DataFrame.
+
+           Parameters:
+               - data_frame (pd.DataFrame): The DataFrame to modify.
+               - name_column (str): The name of the column to store the calculated total carbon
+               dry matter. [mg C/g DW (Dry Weight)]
+               - name_column_flush (str): The name of the column used for flushing indication.
+               - name_column_C_gas_dry_mass_cum (str): The name of the column containing the cumulative
+               carbon gas dry mass. [mg C/g DW (Dry Weight)]
+               - name_column_DIC_cum (str): The name of the column containing the cumulative dissolved inorganic carbon.
+               [mg C/g DW (Dry Weight)]
+               - first_row_value (float, optional): The value to set for the first row of the total carbon
+               dry matter column. Defaults to 0.
+
+           Returns:
+               None
+           """
         data_frame[name_column] = np.nan
         data_frame[name_column].at[0] = first_row_value
 
@@ -256,10 +376,27 @@ class ResultsInterpretations:
                                                       carbon_dioxide_dissolved_between_time_steps_aqueous: str,
                                                       name_column_flush: str, first_row_value: float = 0
                                                       ):
-        data_frame[name_column] = data_frame[name_column_O2_consumed_mol] /\
+        """
+           Calculate the ratio of oxygen consumed to carbon dioxide produced in the DataFrame.
+
+           Parameters:
+               - data_frame (pd.DataFrame): The DataFrame to modify.
+               - name_column (str): The name of the column to store the calculated ratio.
+               - name_column_O2_consumed_mol (str): The name of the column containing the oxygen consumed in moles [mol]
+               - name_column_CO2_produced_gas_mol (str): The name of the column containing the carbon dioxide
+               produced in moles in the gas phase. [mol]
+               - carbon_dioxide_dissolved_between_time_steps_aqueous (str): The name of the column containing
+               the amount of carbon dioxide dissolved between time steps in the aqueous phase. [mol]
+               - name_column_flush (str): The name of the column used for flushing indication.
+               - first_row_value (float, optional): The value to set for the first row of the ratio column.
+               Defaults to 0.
+
+           Returns:
+               None
+           """
+        data_frame[name_column] = data_frame[name_column_O2_consumed_mol] / \
                                   (data_frame[name_column_CO2_produced_gas_mol] +
                                    data_frame[carbon_dioxide_dissolved_between_time_steps_aqueous])
-
 
         data_frame[name_column].at[0] = first_row_value
         mask = (data_frame[name_column_flush] == 1)
