@@ -49,9 +49,6 @@ class GasComposition:
         df[name_column_summation] = df[name_column_ch4] + df[name_column_co2] + df[name_column_o2] + df[name_column_n2]
 
         # Correct the measuring values so that the sum is 100%
-        # for i in [name_column_ch4, name_column_co2, name_column_o2, name_column_n2]:
-        #     df[f"{i}" + "-corr"] = (100 / df[name_column_summation]) * df[f"{i}"]
-
         df[name_correction_ch4] = (100 / df[name_column_summation]) * df[name_column_ch4]
         df[name_correction_co2] = (100 / df[name_column_summation]) * df[name_column_co2]
         df[name_correction_o2] = (100 / df[name_column_summation]) * df[name_column_o2]

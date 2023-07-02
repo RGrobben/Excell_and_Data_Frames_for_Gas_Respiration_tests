@@ -83,8 +83,8 @@ class MolesProduced:
         name_column_mCTot_b (str): column name for the O2 in moles before sampling
         name_column_mCTot_a (str): column name for the O2 in moles after sampling
         """
-        if not all(col in data_frame.columns for col in [name_column_mO2_b, name_column_mO2_a]):
-            raise ValueError("All specified columns must be present in the DataFrame")
+        # if not all(col in data_frame.columns for col in [name_column_mO2_b, name_column_mO2_a]):
+        #     raise ValueError("All specified columns must be present in the DataFrame")
 
         data_frame[name_column] = (data_frame[name_column_mO2_b] - data_frame[name_column_mO2_a].shift(1)) * -1
         data_frame[name_column].at[0] = first_row_value
